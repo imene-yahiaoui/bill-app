@@ -1,9 +1,3 @@
-<<<<<<< HEAD
 node_modules
 coverage
 .idea
-=======
-database_test.sqlite
-node_modules/
-coverage/
->>>>>>> a76014e44e0bb544f32692c96f83c58e81e11aad
