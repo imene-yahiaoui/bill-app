@@ -84,6 +84,29 @@ export default class {
     $('#modaleFileAdmin1').find(".modal-body").html(`<div style='text-align: center;'><img width="100%" src=${billUrl} alt="Bill"/></div>`)
     if (typeof $('#modaleFileAdmin1').modal === 'function') $('#modaleFileAdmin1').modal('show')
   }
+/**
+ * telecharger le fichier pdf
+ */
+// handleClickIconDownload = () => {
+//   console.log('jentend le click de download')
+//   const billUrl = $('#icon-download').attr("data-bill-url");
+//   const imageFileName = $('#icon-download').attr("data-bill-name");
+
+//   // Vérifiez si le fichier est un PDF
+//   const isPDF = billUrl.toLowerCase().endsWith('.pdf');
+  
+//   // Définissez l'extension de téléchargement en fonction du type de fichier
+//   const downloadExtension = isPDF ? 'pdf' : 'png'; // Par défaut, 'png' pour les images
+
+//   // Créez le lien de téléchargement
+//   const downloadLink = document.createElement("a");
+//   downloadLink.href = billUrl;
+//   downloadLink.download = `nom_de_l_image.${downloadExtension}`;
+//   downloadLink.target = "_blank"; // Ouvrir dans un nouvel onglet
+
+//   // Ajoutez le lien à la modal
+//   $('#modaleFileAdmin1').find(".modal-body").append(downloadLink);
+// };
 
   handleEditTicket(e, bill, bills) {
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0
@@ -106,8 +129,10 @@ export default class {
       this.counter ++
     }
     $('#icon-eye-d').click(this.handleClickIconEye)
+    // $('#icon-download').click(this.handleClickIconDownload )
     $('#btn-accept-bill').click((e) => this.handleAcceptSubmit(e, bill))
     $('#btn-refuse-bill').click((e) => this.handleRefuseSubmit(e, bill))
+  
   }
 
   handleAcceptSubmit = (e, bill) => {

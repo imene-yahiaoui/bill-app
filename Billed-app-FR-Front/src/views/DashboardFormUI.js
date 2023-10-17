@@ -1,7 +1,8 @@
-import calendarIcon from '../assets/svg/calendar.js'
-import euroIcon from '../assets/svg/euro.js'
-import pctIcon from '../assets/svg/pct.js'
-import eyeWhite from '../assets/svg/eye_white.js'
+import calendarIcon from '../assets/svg/calendar.js';
+import euroIcon from '../assets/svg/euro.js';
+import pctIcon from '../assets/svg/pct.js';
+import eyeWhite from '../assets/svg/eye_white.js';
+import download from '../assets/svg/download_white.js';
 import { formatDate } from '../app/format.js'
 
 export const modal = () => (`
@@ -71,6 +72,11 @@ export default (bill) => {
             <span id="file-name-admin">${bill.fileName}</span>
             <div class='icons-container'>
               <span id="icon-eye-d" data-testid="icon-eye-d" data-bill-url="${bill.fileUrl}"> ${eyeWhite} </span>
+            
+              <a href="" download="${bill.fileName}.pdf">
+              <span id="icon-download"  data-bill-url="${bill.fileUrl} data-bill-name="${bill.fileName}"> ${download} </span>
+            </a>
+           
             </div>
           </div>
         </div>
