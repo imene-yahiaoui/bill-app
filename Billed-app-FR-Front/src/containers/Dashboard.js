@@ -1,5 +1,5 @@
 import { formatDate } from "../app/format.js";
-import {download}from'../app/download.js';
+import { download } from "../app/download.js";
 import DashboardFormUI from "../views/DashboardFormUI.js";
 import BigBilledIcon from "../assets/svg/big_billed.js";
 import { ROUTES_PATH } from "../constants/routes.js";
@@ -86,60 +86,25 @@ export default class {
   handleClickIconEye = () => {
     const billUrl = $("#icon-eye-d").attr("data-bill-url");
     const imgWidth = Math.floor($("#modaleFileAdmin1").width() * 0.8);
-    $("#modaleFileAdmin1")
-      .find(".modal-body")
-      .html(
-        `<div style='text-align: center;'><img width="100%" src=${billUrl} alt="Bill"/></div>`
-      );
+    if (billUrl === "http://localhost:5678/null") {
+      const notFound =
+        "http://localhost:5678/public/6f7d29b2d76705b28fce20f897d08854";
+
+      $("#modaleFileAdmin1")
+        .find(".modal-body")
+        .html(
+          `<div style='text-align: center;'><img width="100%" src=${notFound} alt="Bill"/></div>`
+        );
+    } else {
+      $("#modaleFileAdmin1")
+        .find(".modal-body")
+        .html(
+          `<div style='text-align: center;'><img width="100%" src=${billUrl} alt="Bill"/></div>`
+        );
+    }
     if (typeof $("#modaleFileAdmin1").modal === "function")
       $("#modaleFileAdmin1").modal("show");
   };
-  /**
-   * telecharger le fichier pdf
-   */
-
-  // handleClickIconDownload = async () => {
-  //   const imgPath = $('#icon-download').attr("data-bill-url");
-
-  //   const imgWidth = 200;
-  //   const imgHeight = 200;
-
-  //   // Créez un nouveau document PDF
-  //   const pdfDoc = await PDFDocument.create();
-
-  //   // Ajoutez une nouvelle page au document (vous pouvez personnaliser la taille de la page)
-  //   const [page] = pdfDoc.addPages([{
-  //     size: [imgWidth, imgHeight],
-  //     margin: 0,
-  //   }]);
-
-  //   // Chargez l'image à partir de l'URL
-  //   const imgData = await fetch(imgPath).then(response => response.arrayBuffer());
-  //   const image = await pdfDoc.embedPng(imgData);
-
-  //   // Obtenez le contexte de la page pour dessiner l'image
-  //   const { width, height } = page.getSize();
-  //   const imgX = (width - imgWidth) / 2;
-  //   const imgY = (height - imgHeight) / 2;
-
-  //   const img = page.drawImage(image, {
-  //     x: imgX,
-  //     y: imgY,
-  //     width: imgWidth,
-  //     height: imgHeight,
-  //   });
-
-  //   // Créez un fichier de sortie
-  //   const pdfBytes = await pdfDoc.save();
-  //   const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-  //   const url = URL.createObjectURL(blob);
-
-  //   // Créez un lien pour télécharger le PDF
-  //   const a = document.createElement('a');
-  //   a.href = url;
-  //   a.download = 'image_to_pdf.pdf';
-  //   a.click();
-  // };
 
   handleEditTicket(e, bill, bills) {
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0;
@@ -161,11 +126,10 @@ export default class {
       $(".vertical-navbar").css({ height: "120vh" });
       this.counter++;
     }
-    $('#icon-download').click(() => {
+    $("#icon-download").click(() => {
       download();
     });
     $("#icon-eye-d").click(this.handleClickIconEye);
-    // $('#icon-download').click(this.handleClickIconDownload )
     $("#btn-accept-bill").click((e) => this.handleAcceptSubmit(e, bill));
     $("#btn-refuse-bill").click((e) => this.handleRefuseSubmit(e, bill));
   }
