@@ -73,8 +73,8 @@ export default (bill) => {
             <div class='icons-container'>
               <span id="icon-eye-d" data-testid="icon-eye-d" data-bill-url="${bill.fileUrl}"> ${eyeWhite} </span>
             
-              <a href="" download="${bill.fileName}.pdf">
-              <span id="icon-download"  data-bill-url="${bill.fileUrl} data-bill-name="${bill.fileName}"> ${download} </span>
+              <a href'#' target="_blank" id="download-link" data-bill-name="${bill.fileName}">
+              <span id="icon-download"  data-bill-url="${bill.fileUrl}"> ${download} </span>
             </a>
            
             </div>
