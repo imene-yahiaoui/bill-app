@@ -135,7 +135,7 @@ npm run run:dev
 L'api est accessible sur le port `5678` en local, c'est à dire `http://localhost:5678`
 
 ## Utilisateurs par défaut:
->>>>>>> a76014e44e0bb544f32692c96f83c58e81e11aad
+
 
 ### administrateur : 
 ```
