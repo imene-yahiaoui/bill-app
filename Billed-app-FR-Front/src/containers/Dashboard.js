@@ -87,8 +87,29 @@ export default class {
 /**
  * telecharger le fichier pdf
  */
-// handleClickIconDownload = () => {
-//   console.log('jentend le click de download')
+  handleClickIconDownload = () => {
+    console.log('jentend le click de download')
+  const PDFDocument = require('pdfkit');
+const fs = require('fs');
+
+// Créez un nouveau document PDF
+const doc = new PDFDocument();
+const output = fs.createWriteStream('image_to_pdf.pdf');
+
+// Chargez votre image PNG
+const imgPath = 'path_to_your_image.png';
+
+// Définissez la taille de l'image dans le PDF
+const imgWidth = 200; // Largeur de l'image
+const imgHeight = 200; // Hauteur de l'image
+
+// Ajoutez l'image au PDF
+doc.image(imgPath, 100, 100, { width: imgWidth, height: imgHeight });
+
+// Finalisez et enregistrez le PDF
+doc.pipe(output);
+doc.end();
+
 //   const billUrl = $('#icon-download').attr("data-bill-url");
 //   const imageFileName = $('#icon-download').attr("data-bill-name");
 
@@ -106,7 +127,7 @@ export default class {
 
 //   // Ajoutez le lien à la modal
 //   $('#modaleFileAdmin1').find(".modal-body").append(downloadLink);
-// };
+  };
 
   handleEditTicket(e, bill, bills) {
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0
