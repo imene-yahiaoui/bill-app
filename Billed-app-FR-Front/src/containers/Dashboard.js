@@ -5,6 +5,7 @@ import BigBilledIcon from "../assets/svg/big_billed.js";
 import { ROUTES_PATH } from "../constants/routes.js";
 import USERS_TEST from "../constants/usersTest.js";
 import Logout from "./Logout.js";
+import { notFound } from "../views/notFound.js";
 
 export const filteredBills = (data, status) => {
   return data && data.length
@@ -87,9 +88,6 @@ export default class {
     const billUrl = $("#icon-eye-d").attr("data-bill-url");
     const imgWidth = Math.floor($("#modaleFileAdmin1").width() * 0.8);
     if (billUrl === "http://localhost:5678/null") {
-      const notFound =
-        "http://localhost:5678/public/6f7d29b2d76705b28fce20f897d08854";
-
       $("#modaleFileAdmin1")
         .find(".modal-body")
         .html(

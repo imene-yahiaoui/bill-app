@@ -1,0 +1,1 @@
+export const notFound =  "http://localhost:5678/public/6f7d29b2d76705b28fce20f897d08854"

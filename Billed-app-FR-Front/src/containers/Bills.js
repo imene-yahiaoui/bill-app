@@ -1,7 +1,7 @@
 import { ROUTES_PATH } from "../constants/routes.js";
 import { formatDate, formatStatus } from "../app/format.js";
 import Logout from "./Logout.js";
-
+import { notFound } from "../views/notFound.js";
 export default class {
   constructor({ document, onNavigate, store, localStorage }) {
     this.document = document;
@@ -35,9 +35,6 @@ export default class {
   handleClickIconEye = (icon) => {
     const billUrl = icon.getAttribute("data-bill-url");
     if (billUrl === "http://localhost:5678/null") {
-      const notFound =
-        "http://localhost:5678/public/6f7d29b2d76705b28fce20f897d08854";
-
       const imgWidth = Math.floor($("#modaleFile").width() * 0.5);
       $("#modaleFile")
         .find(".modal-body")
@@ -62,8 +59,6 @@ export default class {
     const doc = new jsPDF();
     const image = new Image();
     if (icon.getAttribute("data-bill-url") === "http://localhost:5678/null") {
-      const notFound =
-        "http://localhost:5678/public/6f7d29b2d76705b28fce20f897d08854";
       image.src = `${notFound}`;
     } else {
       image.src = icon.getAttribute("data-bill-url");
