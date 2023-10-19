@@ -30,8 +30,7 @@ describe("Given I am connected as an employee", () => {
       window.onNavigate(ROUTES_PATH.Bills);
       await waitFor(() => screen.getByTestId("icon-window"));
       const windowIcon = screen.getByTestId("icon-window");
-      // expect(windowIcon).toHaveClass("active-icon");
-      expect(windowIcon).toHaveAttribute('id', "layout-icon1");
+     expect(windowIcon).toHaveAttribute('id', "layout-icon1");
     });
  
     test("Then bills should be ordered from earliest to latest", () => {
