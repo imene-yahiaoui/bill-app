@@ -46,4 +46,5 @@ export default ({ data, loading, error }) => {
       </div>
     </div>`
   )
+  
 }
