@@ -1,7 +1,7 @@
 {
-  "scripts": {
-    "test": "jest --coverage --noStackTrace --silent"
-  },
+ "scripts": {
+  "test": "jest --coverage --noStackTrace --silent"
+},
   "jest": {
     "verbose": false,
     "setupFiles": [
@@ -36,3 +36,7 @@
     "jest-html-reporter": "^3.1.3"
   }
 }
+
+
+
+

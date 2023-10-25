@@ -1,14 +1,15 @@
- 
-
 ## L'architecture du projet :
+
 Ce projet, dit frontend, est connecté à un service API backend que vous devez aussi lancer en local.
 
 Le projet backend se trouve ici: https://github.com/OpenClassrooms-Student-Center/Billed-app-FR-back
 
 ## Organiser son espace de travail :
+
 Pour une bonne organization, vous pouvez créer un dossier bill-app dans lequel vous allez cloner le projet backend et par la suite, le projet frontend:
 
 Clonez le projet backend dans le dossier bill-app :
+
 ```
 $ git clone https://github.com/OpenClassrooms-Student-Center/Billed-app-FR-Back.git
 ```
@@ -19,6 +20,7 @@ bill-app/
 ```
 
 Clonez le projet frontend dans le dossier bill-app :
+
 ```
 $ git clone https://github.com/OpenClassrooms-Student-Center/Billed-app-FR-Front.git
 ```
@@ -38,27 +40,30 @@ Suivez les indications dans le README du projet backend.
 ### étape 2 - Lancer le frontend :
 
 Allez au repo cloné :
+
 ```
 $ cd Billed-app-FR-Front
 ```
 
 Installez les packages npm (décrits dans `package.json`) :
+
 ```
 $ npm install
 ```
 
 Installez live-server pour lancer un serveur local :
+
 ```
 $ npm install -g live-server
 ```
 
 Lancez l'application :
+
 ```
 $ live-server
 ```
 
 Puis allez à l'adresse : `http://127.0.0.1:8080/`
-
 
 ## Comment lancer tous les tests en local avec Jest ?
 
@@ -81,8 +86,8 @@ $jest src/__tests__/your_test_file.js
 
 ## Comptes et utilisateurs :
 
-Vous pouvez vous connecter en utilisant les comptes:
-=======
+# Vous pouvez vous connecter en utilisant les comptes:
+
 # Billapp backend
 
 ================ FR ====================
@@ -90,30 +95,37 @@ Vous pouvez vous connecter en utilisant les comptes:
 ## Comment lancer l'API en local:
 
 ### Cloner le projet:
+
 ```
 git clone https://github.com/OpenClassrooms-Student-Center/Billed-app-FR-Back.git
 ```
-### Utilisez une version de node compatible
-Si vous utilisez une version récente de node sur votre ordinateur, il se peut qu'il y ai des erreurs lors de l'installation de certaines dépendances. Pour cela il est important de vous assurer que vous ayez une version de node compatible par exemple node v16 ou v18. 
 
-Voici quelques indications pour gérer les version de node sur votre ordinateur: 
+### Utilisez une version de node compatible
+
+Si vous utilisez une version récente de node sur votre ordinateur, il se peut qu'il y ai des erreurs lors de l'installation de certaines dépendances. Pour cela il est important de vous assurer que vous ayez une version de node compatible par exemple node v16 ou v18.
+
+Voici quelques indications pour gérer les version de node sur votre ordinateur:
 
 #### Sur Windows
+
 - Installer NVM pour windows (https://github.com/coreybutler/nvm-windows/tags)
-- changer la version de node pour une version compatible (par exemple 18.16.1) pous cela suivre les instruction de NVM pour windows : 
-    - `nvm install 18.16.1`
-    - `nvm use 18.16.1`
+- changer la version de node pour une version compatible (par exemple 18.16.1) pous cela suivre les instruction de NVM pour windows :
+  - `nvm install 18.16.1`
+  - `nvm use 18.16.1`
 - Ouvrir Powershell en mode administrateur
-- Entrer la commande «  Set-ExecutionPolicy RemoteSigned » pour pouvoir gérer l’execution de scripts dans powershell
+- Entrer la commande « Set-ExecutionPolicy RemoteSigned » pour pouvoir gérer l’execution de scripts dans powershell
 - Fermer toutes les instances de terminal
 - entrer la commande `npm install -g win-node-env` pour installer la gestion des variables d’environnement node pour window
 
 #### Sur Mac
+
 - Installer NVM (Node Version Manager) - https://github.com/nvm-sh/nvm
-- changer la version de node pour une version compatible (par exemple 18.16.1) pous cela suivre les instruction de NVM: 
-    - `nvm install 18.16.1`
-    - `nvm use 18.16.1`
+- changer la version de node pour une version compatible (par exemple 18.16.1) pous cela suivre les instruction de NVM:
+  - `nvm install 18.16.1`
+  - `nvm use 18.16.1`
+
 ### Acceder au repertoire du projet :
+
 ```
 cd Billed-app-FR-Back
 ```
@@ -136,33 +148,34 @@ L'api est accessible sur le port `5678` en local, c'est à dire `http://localhos
 
 ## Utilisateurs par défaut:
 
+### administrateur :
 
-### administrateur : 
 ```
-utilisateur : admin@test.tld 
+utilisateur : admin@test.tld
 mot de passe : admin
 ```
+
 ### employé :
+
 ```
 utilisateur : employee@test.tld
 mot de passe : employee
 ```
-<<<<<<< HEAD
-=======
 
+# <<<<<<< HEAD
 
 ================ EN ====================
 
-
 ## How to run the API locally :
 
-
 ### Clone the projet:
+
 ```
 git clone https://github.com/OpenClassrooms-Student-Center/Billed-app-FR-Back.git
 ```
 
 ### Go to the project directory :
+
 ```
 cd Billed-app-FR-Back
 ```
@@ -176,21 +189,23 @@ npm install
 ### Run the API :
 
 ```
-npm run:dev
+npm run run:dev
 ```
 
 ### Access to the PAI :
 
 The API is locally available on port `5678`, go to `http://localhost:5678`
 
-### administrateur : 
+### administrateur :
+
 ```
-utilisateur : admin@company.tld 
+utilisateur : admin@company.tld
 mot de passe : admin
 ```
+
 ### employé :
+
 ```
 utilisateur : employee@company.tld
 mot de passe : employee
 ```
- 
