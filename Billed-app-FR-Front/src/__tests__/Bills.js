@@ -63,24 +63,6 @@ describe("Given I am connected as an employee", () => {
 describe("Given I am connected as employee and I am on Dashboard page ", () => {
   describe("When I click on the icon eye", () => {
     it("Then A modal should open", () => {
-      // Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-      // window.localStorage.setItem('user', JSON.stringify({
-      //   type: 'Employee'
-      // }))
-      // const store = jest.fn();
-      // const onNavigate = (pathname) => {
-      //   document.body.innerHTML = ROUTES({ pathname });
-      // };
-      //     // Initialisez la classe Bills
-      //     const bills = new Bills({
-      //       document, onNavigate, store, localStorage: window.localStorage
-      //     });
-
-      // document.body.innerHTML = BillsUI(bills[0])
-      // const onNavigate = (pathname) => {
-      //   document.body.innerHTML = ROUTES({ pathname })
-      // }
-
       const handleClickIconEye = jest.fn(screen.handleClickIconEye);
       const eyes = screen.getAllByTestId("icon-eye");
       const eye = eyes[0];
@@ -107,6 +89,33 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       const modal = screen.getByTestId("test");
       expect(modal).toBeVisible();
     });
+
+
+    it("Then should set the image source based on bill URL", () => {
+      const onNavigate = jest.fn();
+      const bills = new Bills({
+        document: document,
+        onNavigate: onNavigate,
+        store: null,
+        localStorage: null,
+      });
+      $.fn.modal = jest.fn();
+      const icon = document.createElement("div");
+      icon.setAttribute("data-bill-url", "http://localhost:5678/null");
+      document.body.append(icon);
+  
+      bills.handleClickIconEye(icon);
+  
+      const billUrl = icon.getAttribute("data-bill-url");
+      const img = screen.getByTestId("image");
+  
+      if (billUrl === "http://localhost:5678/null") {
+        expect(img.src).toBe("http://localhost:5678/public/6f7d29b2d76705b28fce20f897d08854");
+      }
+   else { expect(img.src).toBe(expect.url)}
+    });
+
+
   });
   describe("When I click on buttonNewBill", () => {
     it("Then onNavigate should be called with ROUTES_PATH['NewBill']", () => {
