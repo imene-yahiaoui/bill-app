@@ -54,7 +54,6 @@ export default class Bills {
   };
 
   handleClickDownload = async (icon) => {
-    console.log("jentend le click");
     const { jsPDF } = jspdf;
     const doc = new jsPDF();
     const image = new Image();

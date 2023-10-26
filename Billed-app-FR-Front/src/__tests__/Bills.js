@@ -90,7 +90,6 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       expect(modal).toBeVisible();
     });
 
-
     it("Then should set the image source based on bill URL", () => {
       const onNavigate = jest.fn();
       const bills = new Bills({
@@ -103,20 +102,65 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       const icon = document.createElement("div");
       icon.setAttribute("data-bill-url", "http://localhost:5678/null");
       document.body.append(icon);
-  
+
       bills.handleClickIconEye(icon);
-  
+
       const billUrl = icon.getAttribute("data-bill-url");
       const img = screen.getByTestId("image");
-  
+
       if (billUrl === "http://localhost:5678/null") {
-        expect(img.src).toBe("http://localhost:5678/public/6f7d29b2d76705b28fce20f897d08854");
+        expect(img.src).toBe(
+          "http://localhost:5678/public/6f7d29b2d76705b28fce20f897d08854"
+        );
+      } else {
+        expect(img.src).toBe(expect.url);
       }
-   else { expect(img.src).toBe(expect.url)}
+    // Vérifiez si l'élément modal est visible
+     waitFor(() => {
+      const modal = document.getElementById("modaleFile");
+      expect(modal.style.display).toBe("block");
     });
 
+    });
 
+    it("Should calculate imgWidth based on modalFile width", () => {
+      const modalFile = document.createElement("div");
+      modalFile.id = "modaleFile";
+      modalFile.style.width = "400px";
+      document.body.appendChild(modalFile);
+      setTimeout(() => {
+        const imgWidth = Math.floor(modalFile.clientWidth * 0.5);
+        expect(imgWidth).toBe(200);
+        done(); // Appelé pour indiquer la fin du test asynchrone
+      }, 0);
+    });
   });
+
+  // describe('When I click on the  Download icon',()=>{
+  //   it("Then should set the Download source based on bill URL", () => {
+  //     const onNavigate = jest.fn();
+  //     const bills = new Bills({
+  //       document: document,
+  //       onNavigate: onNavigate,
+  //       store: null,
+  //       localStorage: null,
+  //     });
+  //     $.fn.modal = jest.fn();
+  //     const icon = document.createElement("div");
+  //     icon.setAttribute("data-bill-url", "http://localhost:5678/null");
+  //     document.body.append(icon);
+
+  //     bills.handleClickDownload(icon);
+
+  //     const billUrl = icon.getAttribute("data-bill-url");
+  //     const img = document.querySelector("img");
+
+  //     if (billUrl === "http://localhost:5678/null") {
+  //       expect(img.src).toBe("http://localhost:5678/public/6f7d29b2d76705b28fce20f897d08854");
+  //     }
+  //  else { expect(img.src).toBe(expect.url)}
+  //   });
+  // })
   describe("When I click on buttonNewBill", () => {
     it("Then onNavigate should be called with ROUTES_PATH['NewBill']", () => {
       //add mock for onNavigate
