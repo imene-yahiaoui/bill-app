@@ -162,7 +162,15 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       });
 
     });
-    
+    it("Then A handleClickDownload function should be called", () => {
+      const handleClickDownload = jest.fn(screen.handleClickDownload);
+      const iconsDownload = screen.getAllByTestId("icon-eye");
+      const iconDownload = iconsDownload[0];
+      iconDownload.addEventListener("click", handleClickDownload);
+      userEvent.click(iconDownload);
+      expect(handleClickDownload).toHaveBeenCalled();
+ 
+    });
   });
 
   describe("When I click on buttonNewBill", () => {
