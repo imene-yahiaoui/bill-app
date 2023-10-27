@@ -1,5 +1,31 @@
 # bill-app
 
+Acceder au repertoire du projet :
+étape 1 -Lancer le backend :=> =>
+
+cd Billed-app-FR-Back
+
+
+Lancer l'API :
+npm run run:dev
+
+
+
+étape 2 - Lancer le frontend :=> =>
+
+
+$ cd Billed-app-FR-Front
+
+
+
+Lancez l'application :
+
+
+
+
+live-server
+
+
 
 Access to the PAI :
 
