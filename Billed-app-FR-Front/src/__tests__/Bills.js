@@ -6,11 +6,12 @@ import { screen, waitFor, fireEvent, render } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
-import { ROUTES_PATH } from "../constants/routes.js";
+import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import { DashboardUI } from "../views/DashboardUI";
 import router from "../app/Router.js";
 import Bills from "../containers/Bills.js";
+import mockStore from "../__mocks__/store";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -57,8 +58,6 @@ describe("Given I am connected as an employee", () => {
 /**
  * @jest-environment code
  */
-
-// {"type":"Employee","email":"employee@test.tld","password":"employee","status":"connected"}
 
 describe("Given I am connected as employee and I am on Dashboard page ", () => {
   describe("When I click on the icon eye", () => {
@@ -156,11 +155,10 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       iconDownload.setAttribute("data-bill-url", "http://localhost:5678/null");
       document.body.append(iconDownload);
       // bills.handleClickDownload(iconDownload);
-     waitFor(() => {  
-      const downloadLink = screen.getByTestId("download-link-blue");
-      expect(downloadLink).toHaveAttribute("data-bill-url");
+      waitFor(() => {
+        const downloadLink = screen.getByTestId("download-link-blue");
+        expect(downloadLink).toHaveAttribute("data-bill-url");
       });
-
     });
     it("Then A handleClickDownload function should be called", () => {
       const handleClickDownload = jest.fn(screen.handleClickDownload);
@@ -169,7 +167,6 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       iconDownload.addEventListener("click", handleClickDownload);
       userEvent.click(iconDownload);
       expect(handleClickDownload).toHaveBeenCalled();
- 
     });
   });
 
@@ -193,6 +190,80 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       bills.handleClickNewBill();
       // Vérifiez que la fonction onNavigate a été appelée avec la route correcte
       expect(onNavigate).toHaveBeenCalledWith(ROUTES_PATH["NewBill"]);
+    });
+  });
+});
+
+/**
+ * test integration
+ */
+
+// test d'intégration GET
+describe("Given I am a user connected as Employee", () => {
+  describe("When I navigate to Dashboard", () => {
+    test("Then fetches bills from mock API GET", async () => {
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ type: "Employee", email: "employee@test.tld" })
+      );
+      const root = document.createElement("div");
+      root.setAttribute("id", "root");
+      document.body.append(root);
+      router();
+      window.onNavigate(ROUTES_PATH.Bills);
+      await waitFor(() => screen.getAllByText("Billed"));
+      const contentPending = await screen.getAllByTestId("icon-window");
+      expect(contentPending).toBeTruthy();
+      const contentBilled = await screen.getAllByText("Billed");
+      expect(contentBilled).toBeTruthy();
+      expect(screen.getAllByTestId("icon-mail")).toBeTruthy();
+    });
+    describe("When an error occurs on API", () => {
+      beforeEach(() => {
+        jest.spyOn(mockStore, "bills");
+        Object.defineProperty(window, "localStorage", {
+          value: localStorageMock,
+        });
+        window.localStorage.setItem(
+          "user",
+          JSON.stringify({
+            type: "Employee",
+            email: "employee@test.tld",
+          })
+        );
+        const root = document.createElement("div");
+        root.setAttribute("id", "root");
+        document.body.appendChild(root);
+        router();
+      });
+      test("Then fetches bills from an API and fails with 404 message error", async () => {
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            list: () => {
+              return Promise.reject(new Error("Erreur 404"));
+            },
+          };
+        });
+        window.onNavigate(ROUTES_PATH.Bills);
+        await new Promise(process.nextTick);
+        const message = await screen.getAllByTestId("error-message");
+        expect(message).toBeTruthy();
+      });
+
+      test("Then fetches messages from an API and fails with 500 message error", async () => {
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            list: () => {
+              return Promise.reject(new Error("Erreur 500"));
+            },
+          };
+        });
+
+        window.onNavigate(ROUTES_PATH.Bills);
+        await new Promise(process.nextTick);
+        const message = await screen.getAllByTestId("error-message");
+        expect(message).toBeTruthy();
+      });
     });
   });
 });
