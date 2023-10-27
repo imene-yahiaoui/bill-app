@@ -80,9 +80,6 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
         modalElement.setAttribute("data-testid", "test");
         document.body.appendChild(modalElement);
       }
-      /**
-       *  événements "click" à firstEyeButton
-       */
       firstEyeButton.addEventListener("click", handleClickIconEye());
       // Vérifiez que la modal est visible
       const modal = screen.getByTestId("test");
@@ -141,8 +138,31 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       }, 0);
     });
   });
-  ///je dois travailler sur ca
+
   describe("When I click on the Download icon", () => {
+    it("Then, if I click the Download function, a modal should be opened", () => {
+      const DownloadButtons = screen.getAllByTestId("download-link-blue");
+      const firstDownloadButton = DownloadButtons[0];
+      function handleClickDownload() {
+        const modalElement = document.createElement("div");
+        modalElement.setAttribute("data-testid", "Download");
+        document.body.appendChild(modalElement);
+      }
+      firstDownloadButton.addEventListener("click", handleClickDownload());
+      // Vérifiez que la modal est visible
+      const modal = screen.getByTestId("Download");
+      expect(modal).toBeVisible();
+    });
+//////////////////// a revoire ici////
+    it("Then A handleClickDownload function should be called", () => {
+      const handleClickDownload = jest.fn(screen.handleClickDownload);
+      const iconsDownload = screen.getAllByTestId("icon-eye");
+      const iconDownload = iconsDownload[0];
+      userEvent.click(iconDownload);
+       iconDownload.addEventListener("click", handleClickDownload());       
+      expect(handleClickDownload).toHaveBeenCalled();
+    });
+
     it("Then downloadLink should be have attribute (data-bill-url)", () => {
       const onNavigate = jest.fn();
       const bills = new Bills({
@@ -160,14 +180,8 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
         expect(downloadLink).toHaveAttribute("data-bill-url");
       });
     });
-    it("Then A handleClickDownload function should be called", () => {
-      const handleClickDownload = jest.fn(screen.handleClickDownload);
-      const iconsDownload = screen.getAllByTestId("icon-eye");
-      const iconDownload = iconsDownload[0];
-      iconDownload.addEventListener("click", handleClickDownload);
-      userEvent.click(iconDownload);
-      expect(handleClickDownload).toHaveBeenCalled();
-    });
+
+    //ici ajouter downolad
   });
 
   describe("When I click on buttonNewBill", () => {

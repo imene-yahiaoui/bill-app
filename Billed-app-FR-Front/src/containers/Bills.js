@@ -2,7 +2,7 @@ import { ROUTES_PATH } from "../constants/routes.js";
 import { formatDate, formatStatus } from "../app/format.js";
 import Logout from "./Logout.js";
 import { notFound } from "../views/notFound.js";
- 
+
 
 export default class Bills {
   constructor({ document, onNavigate, store, localStorage }) {
@@ -56,7 +56,7 @@ export default class Bills {
   };
 
   handleClickDownload = async (icon) => {
-    const { jsPDF } = jspdf;
+     const { jsPDF } = jspdf;
     const doc = new jsPDF();
     const image = new Image();
     if (icon.getAttribute("data-bill-url") === "http://localhost:5678/null") {
