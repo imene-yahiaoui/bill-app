@@ -4,6 +4,7 @@ import { render, screen, fireEvent } from "@testing-library/dom";
 import "@testing-library/jest-dom/extend-expect";
 import userEvent from "@testing-library/user-event";
 import { ROUTES_PATH } from "../constants/routes.js";
+import { bills } from "../fixtures/bills.js";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
@@ -77,6 +78,32 @@ describe("Given I am connected as an employee", () => {
       const event = { preventDefault: jest.fn() };
       newBill.handleChangeFile(event);
       expect(event.preventDefault).toHaveBeenCalled();
+    });
+
+    it("Then handleChangeFile function should be update properties", async () => {
+      const storeMock = {
+        bills: () => {
+          return {
+            create: jest.fn().mockResolvedValue([bills[0]]),
+          };
+        },
+      };
+      console.log("bills[0]ici test:", bills[0].fileUrl);
+      const onNavigate = jest.fn();
+      const newBill = new NewBill({
+        document: document,
+        onNavigate: onNavigate,
+        store: storeMock,
+        localStorage: null,
+      });
+      const event = { preventDefault: jest.fn() };
+      await newBill.handleChangeFile(event);
+      expect(event.preventDefault).toHaveBeenCalled();
+      expect(bills[0].fileUrl).toBe(
+        "https://test.storage.tld/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a"
+      );
+      expect(bills[0].fileName).toBe("preview-facture-free-201801-pdf-1.jpg");
+      expect(bills[0].id).toBe("47qAXb6fIm2zOKkLzMro");
     });
 
     // Mock des dépendances

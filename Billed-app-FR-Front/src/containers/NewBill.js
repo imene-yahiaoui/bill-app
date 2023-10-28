@@ -36,7 +36,7 @@ export default class NewBill {
           noContentType: true,
         },
       })
-      .then(({ fileUrl, key }) => {
+      ?.then(({ fileUrl, key }) => {
         console.log(fileUrl);
         this.billId = key;
         this.fileUrl = fileUrl;
