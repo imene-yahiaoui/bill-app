@@ -3,7 +3,7 @@ import NewBill from "../containers/NewBill.js";
 import { render, screen, fireEvent } from "@testing-library/dom";
 import "@testing-library/jest-dom/extend-expect";
 import userEvent from "@testing-library/user-event";
-import { ROUTES_PATH } from '../constants/routes.js'
+import { ROUTES_PATH } from "../constants/routes.js";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
@@ -66,41 +66,18 @@ describe("Given I am connected as an employee", () => {
       expect(handleChangeFile).toHaveBeenCalled();
       expect(handleChangeFile).toHaveBeenCalledTimes(files.length);
     });
-    // it("Then handleChangeFile function should be called with event", () => {
-    //   const handleChangeFile = jest.fn(screen.handleChangeFile);
-    //   const files = screen.getAllByTestId("file");
-    //   //cree mock pour event
-    //   files.forEach((file) => {
-    //     const event = {
-    //       preventDefault: jest.fn(),
-    //       target: file,
-    //     };
-    //     handleChangeFile(event);
-    //     expect(handleChangeFile).toHaveBeenCalledWith(event);
-    //   });
-    // });
-    // it("Then handleChangeFile function should be called with event", () => {
-    //   const handleChangeFile = jest.fn(screen.handleChangeFile);
-    //   const files = screen.getAllByTestId("file");
-    //   // Créez un mock pour l'objet event
-    //   const event = {
-    //     preventDefault: jest.fn(),
-    //     target: {
-    //       files: [
-    //         {
-    //           name: "file.txt",
-    //           size: 1024 ,
-    //           type: "text/plain",
-    //         },
-    //       ],
-    //       value: "file-path",
-    //     },
-    //   };
-    //   files.forEach((file) => {
-    //     handleChangeFile(event);
-    //     expect(handleChangeFile).toHaveBeenCalledWith(event);
-    //   });
-    // });
+    it("Then handleChangeFile function should be called with event", () => {
+      const onNavigate = jest.fn();
+      const newBill = new NewBill({
+        document: document,
+        onNavigate: onNavigate,
+        store: null,
+        localStorage: null,
+      });
+      const event = { preventDefault: jest.fn() };
+      newBill.handleChangeFile(event);
+      expect(event.preventDefault).toHaveBeenCalled();
+    });
 
     // Mock des dépendances
     const mockDocument = document;
@@ -116,32 +93,7 @@ describe("Given I am connected as an employee", () => {
         .fn()
         .mockReturnValue(JSON.stringify({ email: "employee@test.tld" })),
     };
-    // it("Then handleChangeFile function should be called with event", () => {
-    //   const onNavigate = jest.fn();
-    //   const newBillInstance = new NewBill({
-    //     document:  document,
-    //     onNavigate: onNavigate,
-    //     store: null,
-    //     localStorage:null
-      
-    //   });
-    
-    
-    //   const files = screen.getAllByTestId("file");
-    
-    //   //cree mock pour event
-    //   files.forEach((file) => {
-    //     const event = {
-    //       preventDefault: jest.fn(),
-    //       target: file,
-    //     };
-    //   // userEvent.click(file)
-    //     newBillInstance.handleChangeFile(event)
-    //     // handleChangeFile(event);
-    //     expect(handleChangeFile).toHaveBeenCalledWith(event);
-    //   });
-    // });
-    //
+
     it("Then should create an instance of NewBill", () => {
       const newBillInstance = new NewBill({
         document: mockDocument,
@@ -155,21 +107,13 @@ describe("Given I am connected as an employee", () => {
       expect(newBillInstance.onNavigate).toBe(mockOnNavigate);
       expect(newBillInstance.store).toBe(mockStore);
     });
-
-
-
- 
-
   });
 
-
-
-  describe('When I click on send btn',()=>{
+  describe("When I click on send btn", () => {
     it("Then onNavigate should be called with ROUTES_PATH['Bills']", () => {
       //add mock for onNavigate
       const onNavigate = jest.fn();
-      // Instanciez la classe Bills
-      const newBill= new NewBill({
+      const newBill = new NewBill({
         document: document,
         onNavigate: onNavigate,
         store: null,
@@ -177,10 +121,10 @@ describe("Given I am connected as an employee", () => {
       });
       const send = document.createElement("button");
       send.setAttribute("id", "btn-send-bill");
-      document.body.appendChild(send );
+      document.body.appendChild(send);
       const e = { preventDefault: jest.fn() };
       newBill.handleSubmit(e);
-      expect(onNavigate).toHaveBeenCalledWith(ROUTES_PATH['Bills']);
+      expect(onNavigate).toHaveBeenCalledWith(ROUTES_PATH["Bills"]);
     });
-  })
+  });
 });

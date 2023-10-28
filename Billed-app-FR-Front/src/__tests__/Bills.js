@@ -153,13 +153,13 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       const modal = screen.getByTestId("Download");
       expect(modal).toBeVisible();
     });
-//////////////////// a revoire ici////
+    //////////////////// a revoire ici////
     it("Then A handleClickDownload function should be called", () => {
       const handleClickDownload = jest.fn(screen.handleClickDownload);
       const iconsDownload = screen.getAllByTestId("icon-eye");
       const iconDownload = iconsDownload[0];
       userEvent.click(iconDownload);
-       iconDownload.addEventListener("click", handleClickDownload());       
+      iconDownload.addEventListener("click", handleClickDownload());
       expect(handleClickDownload).toHaveBeenCalled();
     });
 
