@@ -1,7 +1,7 @@
 # bill-app
 
 Acceder au repertoire du projet :
-étape 1 -Lancer le backend :=> =>
+étape 1 -Lancer le backend :
 
 cd Billed-app-FR-Back
 
