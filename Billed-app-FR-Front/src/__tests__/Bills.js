@@ -52,6 +52,37 @@ describe("Given I am connected as an employee", () => {
       const buttonNewBill = screen.getByTestId("btn-new-bill");
       expect(buttonNewBill.textContent.trim()).toBe("Nouvelle note de frais");
     });
+
+    describe("When I get Bills", () => {
+      it("Then should handle errors with catch", async () => {
+        const storeMock = {
+          bills: () => ({
+            list: jest
+              .fn()
+              .mockRejectedValue(new Error("Some error message")),
+          }),
+        };
+        const doc = {
+          date: "date invalide"
+        };
+        const onNavigate = jest.fn();
+        const bill = new Bills({
+          document: document,
+          onNavigate: onNavigate,
+          store: storeMock,
+          localStorage: null,
+        });
+      
+        try {
+          await bill.getBills();
+          const result = bill.getBills();
+          expect(result[0].date).toBe("date invalide");
+        } catch (error) {
+          expect(error.message).toBe("Some error message");
+        }
+      });
+      
+      })
   });
 });
 
@@ -207,6 +238,9 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
     });
   });
 });
+
+
+
 
 /**
  * test integration
