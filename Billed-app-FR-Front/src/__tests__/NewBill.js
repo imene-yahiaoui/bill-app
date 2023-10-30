@@ -79,7 +79,7 @@ describe("Given I am connected as an employee", () => {
       newBill.handleChangeFile(event);
       expect(event.preventDefault).toHaveBeenCalled();
     });
-/////////////ici////////
+    /////////////ici////////
     it("Then handleChangeFile function should be update properties", async () => {
       const storeMock = {
         bills: () => {
@@ -88,7 +88,7 @@ describe("Given I am connected as an employee", () => {
           };
         },
       };
-      console.log("bills[0]ici test:", bills[0].fileUrl);
+
       const onNavigate = jest.fn();
       const newBill = new NewBill({
         document: document,
@@ -106,22 +106,21 @@ describe("Given I am connected as an employee", () => {
       expect(bills[0].id).toBe("47qAXb6fIm2zOKkLzMro");
     });
 
-    // Mock des dépendances
-    const mockDocument = document;
-    const mockOnNavigate = jest.fn();
-    const mockStore = {
-      bills: {
-        create: jest.fn().mockResolvedValue({ fileUrl: "Url", key: "Key" }),
-        update: jest.fn().mockResolvedValue({}),
-      },
-    };
-    const mockLocalStorage = {
-      getItem: jest
-        .fn()
-        .mockReturnValue(JSON.stringify({ email: "employee@test.tld" })),
-    };
-
     it("Then should create an instance of NewBill", () => {
+      // Mock des dépendances
+      const mockDocument = document;
+      const mockOnNavigate = jest.fn();
+      const mockStore = {
+        bills: {
+          create: jest.fn().mockResolvedValue({ fileUrl: "Url", key: "Key" }),
+          update: jest.fn().mockResolvedValue({}),
+        },
+      };
+      const mockLocalStorage = {
+        getItem: jest
+          .fn()
+          .mockReturnValue(JSON.stringify({ email: "employee@test.tld" })),
+      };
       const newBillInstance = new NewBill({
         document: mockDocument,
         onNavigate: mockOnNavigate,
@@ -135,31 +134,31 @@ describe("Given I am connected as an employee", () => {
       expect(newBillInstance.store).toBe(mockStore);
     });
 
-
-
-  it('Then should handle errors with catch', async () => {
-    const storeMock = {
-      bills: () => {
-        return {
-          create: jest.fn().mockRejectedValue(new Error('Some error message')),
-        };
-      },
-    };
-    const onNavigate = jest.fn();
-    const newBill = new NewBill({
-      document: document,
-      onNavigate: onNavigate,
-      store: storeMock,
-      localStorage: null,
+    it("Then should handle errors with catch", async () => {
+      const storeMock = {
+        bills: () => {
+          return {
+            create: jest
+              .fn()
+              .mockRejectedValue(new Error("Some error message")),
+          };
+        },
+      };
+      const onNavigate = jest.fn();
+      const newBill = new NewBill({
+        document: document,
+        onNavigate: onNavigate,
+        store: storeMock,
+        localStorage: null,
+      });
+      const e = { preventDefault: jest.fn() };
+      try {
+        await newBill.handleChangeFile(e);
+      } catch (error) {
+        expect(error.message).toBe("Some error message");
+      }
     });
-    const e = { preventDefault: jest.fn() };
-    try {
-      await newBill.handleChangeFile(e); 
-    } catch (error) {
-      expect(error.message).toBe("Some error message");
-    }
   });
-})
 
   describe("When I click on send btn", () => {
     it("Then onNavigate should be called with ROUTES_PATH['Bills']", () => {
@@ -179,6 +178,72 @@ describe("Given I am connected as an employee", () => {
       expect(onNavigate).toHaveBeenCalledWith(ROUTES_PATH["Bills"]);
     });
   });
+
+  describe("When I update Bill", () => {
+    it("Then onNavigate should be called", () => {
+      const storeMock = {
+        bills: () => ({
+          update: jest.fn().mockResolvedValue({}),
+        }),
+      };
+      const onNavigate = jest.fn();
+      const newBills = new NewBill({
+        document: document,
+        onNavigate: onNavigate,
+        store: storeMock,
+        localStorage: null,
+      });
+      const bill = {
+        email: "test@gmail.com",
+        type: "Vol Paris Marseille",
+        date: "22 Nov. 21",
+        amount: "240 €",
+        vat: "230",
+        pct: "10",
+        commentary: "test",
+        fileUrl:
+          "http://localhost:5678/public/4b392f446047ced066990b0627cfa444",
+        fileName: "photo.png",
+        status: "pending",
+      };
+      const send = document.createElement("button");
+      send.setAttribute("id", "btn-send-bill");
+      document.body.appendChild(send);
+      newBills.updateBill(bill);
+      userEvent.click(send);
+      const e = { preventDefault: jest.fn() };
+      try {
+        newBills.handleSubmit(e);
+        expect(onNavigate).toHaveBeenCalled();
+        expect(onNavigate).toHaveBeenCalledWith(ROUTES_PATH["Bills"]);
+      } catch (error) {
+        expect(console.error).toHaveBeenCalled();
+      }
+    });
+
+    it("Then should handle errors with catch", async () => {
+      const storeMock = {
+        bills: () => {
+          return {
+            update: jest
+              .fn()
+              .mockRejectedValue(new Error("Some error message")),
+          };
+        },
+      };
+      const onNavigate = jest.fn();
+      const newBill = new NewBill({
+        document: document,
+        onNavigate: onNavigate,
+        store: storeMock,
+        localStorage: null,
+      });
+      const e = jest.fn();
+      try {
+        await newBill.updateBill(e);
+      } catch (error) {
+        expect(error.message).toBe("Some error message");
+      }
+    });
+  });
 });
-
-
