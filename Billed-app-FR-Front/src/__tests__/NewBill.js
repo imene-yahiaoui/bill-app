@@ -79,7 +79,7 @@ describe("Given I am connected as an employee", () => {
       newBill.handleChangeFile(event);
       expect(event.preventDefault).toHaveBeenCalled();
     });
-
+/////////////ici////////
     it("Then handleChangeFile function should be update properties", async () => {
       const storeMock = {
         bills: () => {
@@ -134,7 +134,32 @@ describe("Given I am connected as an employee", () => {
       expect(newBillInstance.onNavigate).toBe(mockOnNavigate);
       expect(newBillInstance.store).toBe(mockStore);
     });
+
+
+
+  it('Then should handle errors with catch', async () => {
+    const storeMock = {
+      bills: () => {
+        return {
+          create: jest.fn().mockRejectedValue(new Error('Some error message')),
+        };
+      },
+    };
+    const onNavigate = jest.fn();
+    const newBill = new NewBill({
+      document: document,
+      onNavigate: onNavigate,
+      store: storeMock,
+      localStorage: null,
+    });
+    const e = { preventDefault: jest.fn() };
+    try {
+      await newBill.handleChangeFile(e); 
+    } catch (error) {
+      expect(error.message).toBe("Some error message");
+    }
   });
+})
 
   describe("When I click on send btn", () => {
     it("Then onNavigate should be called with ROUTES_PATH['Bills']", () => {
@@ -155,3 +180,5 @@ describe("Given I am connected as an employee", () => {
     });
   });
 });
+
+
