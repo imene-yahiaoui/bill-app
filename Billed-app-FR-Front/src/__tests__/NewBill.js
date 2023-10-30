@@ -1,10 +1,11 @@
 import NewBillUI from "../views/NewBillUI.js";
 import NewBill from "../containers/NewBill.js";
-import { render, screen, fireEvent } from "@testing-library/dom";
+import { render, screen, fireEvent, waitFor } from "@testing-library/dom";
 import "@testing-library/jest-dom/extend-expect";
 import userEvent from "@testing-library/user-event";
 import { ROUTES_PATH } from "../constants/routes.js";
 import { bills } from "../fixtures/bills.js";
+import router from "../app/Router.js";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
@@ -245,5 +246,40 @@ describe("Given I am connected as an employee", () => {
         expect(error.message).toBe("Some error message");
       }
     });
+  });
+});
+
+/**
+ * test integration
+ */
+
+// test d'intégration POST a faire
+
+describe("Given I am a user connected as Employee", () => {
+  describe("When I submit a new bill", () => {
+    test("Then fetches bills from mock API POST", async () => {
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ type: "Employee", email: "employee@test.tld" })
+      );
+      const root = document.createElement("div");
+      root.setAttribute("id", "root");
+      document.body.append(root);
+      router();
+      window.onNavigate(ROUTES_PATH.Bills);
+      await waitFor(() => screen.getByTestId("title"));
+      const title = screen.getByTestId("title");
+      expect(title.textContent.trim()).toBe("Envoyer une note de frais");
+      const inputName = screen.getByTestId("expense-name");
+      expect(inputName).toBeTruthy();
+      const datepicker = screen.getByTestId("datepicker");
+      expect(datepicker).toBeTruthy();
+      const vat = screen.getByTestId("vat");
+      const pct = screen.getByTestId("pct");
+      expect(vat).toBeTruthy();
+      expect(pct).toBeTruthy();
+    });
+
+ 
   });
 });
