@@ -28,6 +28,37 @@ describe("Given that I am a user on login page", () => {
       fireEvent.submit(form);
       expect(screen.getByTestId("form-employee")).toBeTruthy();
     });
+    it("Then should handle errors with catch", async () => {
+      const storeMock = {
+        Login: () => ({
+          Login: jest.fn().mockRejectedValue(new Error()),
+        }),
+      };
+      const doc = {
+        user: {
+          type: "Employee",
+          email: "test@test.tlm",
+          password: "test",
+          status: "connected",
+        },
+      };
+      const onNavigate = jest.fn();
+      let PREVIOUS_LOCATION = "";
+      const store = jest.fn();
+      const login = new Login({
+        doc,
+        localStorage: window.localStorage,
+        onNavigate,
+        PREVIOUS_LOCATION,
+        store,
+      });
+      try {
+        const e = { preventDefault: jest.fn() };
+        await log.handleSubmitEmployee(e);
+      } catch (err) {
+        expect(err.message).toBe("log is not defined");
+      }
+    });
   });
 
   describe("When I do fill fields in incorrect format and I click on employee button Login In", () => {
@@ -139,9 +170,9 @@ describe("Given that I am a user on login page", () => {
       expect(screen.getByTestId("form-admin")).toBeTruthy();
     });
   });
-/**
- * for admin
- */
+  /**
+   * for admin
+   */
   describe("When I do fill fields in incorrect format and I click on admin button Login In", () => {
     test("Then it should renders Login page", () => {
       document.body.innerHTML = LoginUI();

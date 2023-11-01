@@ -22,7 +22,8 @@ export default class NewBill {
     const file = this.document.querySelector(`input[data-testid="file"]`)
       .files[0];
     const filePath = e.target?.value?.split(/\\/g);
-    const fileName = (filePath && filePath.length > 0) ? filePath[filePath.length - 1] : null;
+    const fileName =
+      filePath && filePath.length > 0 ? filePath[filePath.length - 1] : null;
     const formData = new FormData();
     const email = JSON.parse(localStorage.getItem("user"))?.email;
     formData.append("file", file);
@@ -42,7 +43,7 @@ export default class NewBill {
         this.fileUrl = fileUrl;
         this.fileName = fileName;
       })
-      .catch((error) => console.error(error));
+      .catch((error) => console.log(error));
   };
   handleSubmit = (e) => {
     e.preventDefault();
@@ -82,7 +83,7 @@ export default class NewBill {
         ?.then(() => {
           this.onNavigate(ROUTES_PATH["Bills"]);
         })
-        .catch((error) => console.error(error));
+        .catch((error) => console.log(error));
     }
   };
 }
