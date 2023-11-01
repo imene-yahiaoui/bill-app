@@ -10,12 +10,10 @@ Lancer l'API :
 npm run run:dev
 
 
-
 étape 2 - Lancer le frontend :=> =>
 
 
 $ cd Billed-app-FR-Front
-
 
 
 Lancez l'application :
