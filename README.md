@@ -23,7 +23,6 @@ Lancez l'application :
 live-server
 
 
-
 Access to the PAI :
 
 The API is locally available on port 5678, go to http://localhost:5678
