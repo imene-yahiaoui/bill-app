@@ -19,7 +19,6 @@ $ cd Billed-app-FR-Front
 Lancez l'application :
 
 
-
 live-server
 
 
