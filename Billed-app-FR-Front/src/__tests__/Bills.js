@@ -251,37 +251,33 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       });
     });
 
-  it("Then should set the image source based on bill URL", () => {
-    const onNavigate = jest.fn();
-    const bills = new Bills({
-      document: document,
-      onNavigate: onNavigate,
-      store: null,
-      localStorage: null,
+    it("Then should set the image source based on bill URL", () => {
+      const onNavigate = jest.fn();
+      const bills = new Bills({
+        document: document,
+        onNavigate: onNavigate,
+        store: null,
+        localStorage: null,
+      });
+      window.jspdf = {
+        jsPDF: class jsPDF {
+          constructor() {}
+          addImage() {}
+          save() {}
+        },
+      };
+      const icon = document.createElement("div");
+      icon.setAttribute(
+        "data-bill-url",
+        "http://localhost:5678/public/6f7d29b2d76705b28fce20f897d08854"
+      );
+      const billUrl = icon.getAttribute("data-bill-url");
+      document.body.append(icon);
+      bills.handleClickDownload(icon);
+      const img = document.querySelector("img");
+      expect(img.src).toBe(icon.getAttribute("data-bill-url"));
     });
-    window.jspdf = {
-      jsPDF: class jsPDF {
-        constructor() {}
-        addImage() {}
-        save() {}
-      },
-    };
-    const icon = document.createElement("div");
-    icon.setAttribute("data-bill-url", "http://localhost:5678/public/6f7d29b2d76705b28fce20f897d08854");
-    const billUrl = icon.getAttribute("data-bill-url");
-   
-  
-    document.body.append(icon);
-  
-    bills.handleClickDownload(icon);
-  
-    const img = document.querySelector("img"); 
-  
-        expect(img.src).toBe(icon.getAttribute("data-bill-url"));
-   
- 
   });
-})
 
   describe("When I click on buttonNewBill", () => {
     it("Then onNavigate should be called with ROUTES_PATH['NewBill']", () => {
@@ -303,6 +299,56 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       bills.handleClickNewBill();
       // Vérifiez que la fonction onNavigate a été appelée avec la route correcte
       expect(onNavigate).toHaveBeenCalledWith(ROUTES_PATH["NewBill"]);
+    });
+
+    //test
+
+    it("should return a list of bills with formatted date and status", async () => {
+      const storeMock = {
+        bills: () => ({
+          list: jest.fn().mockResolvedValue([
+            {
+              date: "4 Avr. 04",
+              status: "pending",
+            },
+          ]),
+        }),
+      };
+
+      const bills = new Bills({
+        document: document,
+        onNavigate: jest.fn(),
+        store: storeMock,
+        localStorage: null,
+      });
+
+      expect(bills.store).toBeDefined();
+      const formattedBills = await bills.getBills();
+
+      expect(formattedBills).toEqual([
+        {
+          date: "4 Avr. 04",
+          status: "En attente",
+        },
+      ]);
+    });
+
+    it("should handle the case when store is not defined", async () => {
+      const storeMock = {
+        bills: () => ({
+          list: jest.fn().mockResolvedValue([]),
+        }),
+      };
+
+      const bills = new Bills({
+        document: document,
+        onNavigate: jest.fn(),
+        store: null,
+        localStorage: null,
+      });
+
+      const formattedBills = await bills.getBills();
+      expect(formattedBills).toEqual(undefined);
     });
   });
 });
