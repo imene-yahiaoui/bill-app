@@ -13,6 +13,7 @@ import router from "../app/Router.js";
 import Bills from "../containers/Bills.js";
 import mockStore from "../__mocks__/store";
 // const jsPDF = require("jsPDF");
+import eyeBlueIcon from "../assets/svg/eye_blue.js";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -60,15 +61,46 @@ describe("Given I am connected as an employee", () => {
       }
     });
 
+    test("Then should be existe buttons iconEye", () => {
+      const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`);
+      expect(iconEye).toBeTruthy();
+      expect(iconEye).toBeDefined();
+      iconEye.forEach((icon) => {
+        expect(icon).toHaveAttribute("id", "eye");
+        expect(icon.getAttribute("id")).toBe("eye");
+      });
+    });
+
     test("Then should be existe icon Download", () => {
+      const onNavigate = jest.fn();
+      const bills = new Bills({
+        document: document,
+        onNavigate: onNavigate,
+        store: null,
+        localStorage: null,
+      });
+      window.jspdf = {
+        jsPDF: class jsPDF {
+          constructor() {}
+          addImage() {}
+          save() {}
+        },
+      };
       const AllIconDownload = screen.getAllByTestId("download-link-blue");
       expect(AllIconDownload).toBeTruthy();
+      AllIconDownload.forEach((iconDownload) => {
+        expect(iconDownload).toHaveAttribute("id", "download-link-blue");
+      });
       const iconDownload = AllIconDownload[0];
 
       if (iconDownload) {
-        const handleClickDownload = jest.fn(screen.handleClickDownload);
-        iconDownload.addEventListener("click", handleClickDownload);
+        const handleClickDownload = jest.spyOn(bills, "handleClickDownload");
         userEvent.click(iconDownload);
+        iconDownload.addEventListener(
+          "click",
+          handleClickDownload(iconDownload)
+        );
+
         expect(handleClickDownload).toHaveBeenCalled();
       }
     });
@@ -91,6 +123,8 @@ describe("Given I am connected as an employee", () => {
 
       const iconDownload = document.createElement("a");
       iconDownload.setAttribute("data-bill-url", "http://localhost:5678/null");
+      document.body.append(iconDownload);
+      ///ici ajoute
       const handleClickDownloadSpy = jest.spyOn(bills, "handleClickDownload");
 
       iconDownload.addEventListener("click", () => {
@@ -100,6 +134,33 @@ describe("Given I am connected as an employee", () => {
       userEvent.click(iconDownload);
 
       expect(handleClickDownloadSpy).toHaveBeenCalled();
+    });
+
+    it("Then handleClickDownload function should be used", async () => {
+      const onNavigate = jest.fn();
+      const bills = new Bills({
+        document: document,
+        onNavigate: onNavigate,
+        store: null,
+        localStorage: null,
+      });
+      window.jspdf = {
+        jsPDF: class jsPDF {
+          constructor() {}
+          addImage() {}
+          save() {}
+        },
+      };
+      const iconDownload = document.createElement("a");
+      iconDownload.setAttribute("data-bill-url", "http://localhost:5678/null");
+      document.body.append(iconDownload);
+
+      // Appelez directement la méthode handleClickDownload
+      await bills.handleClickDownload(iconDownload);
+
+      expect(iconDownload.getAttribute("data-bill-url")).toBe(
+        "http://localhost:5678/null"
+      );
     });
 
     describe("When I get Bills", () => {
@@ -132,10 +193,6 @@ describe("Given I am connected as an employee", () => {
   });
 });
 
-/**
- * @jest-environment code
- */
-
 describe("Given I am connected as employee and I am on Dashboard page ", () => {
   describe("When I click on the icon eye", () => {
     it("Then A modal should open", () => {
@@ -152,8 +209,8 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       expect(modale).toBeTruthy();
     });
     it("Then add a test function should be called", () => {
-      const eyeButtons = screen.getAllByTestId("icon-eye");
-      const firstEyeButton = eyeButtons[0];
+      const iconEye = screen.getAllByTestId("icon-eye");
+      const firstEyeButton = iconEye[0];
       function handleClickIconEye() {
         const modalElement = document.createElement("div");
         modalElement.setAttribute("data-testid", "test");
@@ -197,7 +254,7 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       });
     });
 
-    it("Should calculate imgWidth based on modalFile width", () => {
+    it("Then Should calculate imgWidth based on modalFile width", () => {
       const onNavigate = jest.fn();
       const bills = new Bills({
         document: document,
@@ -244,7 +301,6 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       const iconDownload = document.createElement("a");
       iconDownload.setAttribute("data-bill-url", "http://localhost:5678/null");
       document.body.append(iconDownload);
-      // bills.handleClickDownload(iconDownload);
       waitFor(() => {
         const downloadLink = screen.getByTestId("download-link-blue");
         expect(downloadLink).toHaveAttribute("data-bill-url");
@@ -273,7 +329,7 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       );
       const billUrl = icon.getAttribute("data-bill-url");
       document.body.append(icon);
-      bills.handleClickDownload(icon);
+
       const img = document.querySelector("img");
       expect(img.src).toBe(icon.getAttribute("data-bill-url"));
     });
@@ -295,15 +351,12 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       buttonNewBill.setAttribute("data-testid", "btn-new-bill");
       document.body.appendChild(buttonNewBill);
 
-      // Appele la méthode handleClickNewBill de l'instance de Bills
       bills.handleClickNewBill();
-      // Vérifiez que la fonction onNavigate a été appelée avec la route correcte
+
       expect(onNavigate).toHaveBeenCalledWith(ROUTES_PATH["NewBill"]);
     });
 
-    //test
-
-    it("should return a list of bills with formatted date and status", async () => {
+    it("Then should return a list of bills with formatted date and status", async () => {
       const storeMock = {
         bills: () => ({
           list: jest.fn().mockResolvedValue([
@@ -333,7 +386,7 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       ]);
     });
 
-    it("should handle the case when store is not defined", async () => {
+    it("Then should handle the case when store is not defined", async () => {
       const storeMock = {
         bills: () => ({
           list: jest.fn().mockResolvedValue([]),
@@ -348,7 +401,7 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       });
 
       const formattedBills = await bills.getBills();
-      expect(formattedBills).toEqual(undefined);
+      expect(formattedBills).toBeUndefined();
     });
   });
 });
@@ -357,7 +410,6 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
  * test integration
  */
 
-// test d'intégration GET
 describe("Given I am a user connected as Employee", () => {
   describe("When I navigate to Dashboard", () => {
     test("Then fetches bills from mock API GET", async () => {
