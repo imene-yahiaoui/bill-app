@@ -12,7 +12,7 @@ import { DashboardUI } from "../views/DashboardUI";
 import router from "../app/Router.js";
 import Bills from "../containers/Bills.js";
 import mockStore from "../__mocks__/store";
-
+// const jsPDF = require("jsPDF");
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -52,99 +52,65 @@ describe("Given I am connected as an employee", () => {
     test("Then should be existe button new bill", () => {
       const buttonNewBill = screen.getByTestId("btn-new-bill");
       expect(buttonNewBill.textContent.trim()).toBe("Nouvelle note de frais");
-      if(buttonNewBill){
+      if (buttonNewBill) {
         const handleClickNewBill = jest.fn(screen.handleClickNewBill);
         buttonNewBill.addEventListener("click", handleClickNewBill);
-        userEvent.click(buttonNewBill)
+        userEvent.click(buttonNewBill);
         expect(handleClickNewBill).toHaveBeenCalled();
       }
     });
 
     test("Then should be existe icon Download", () => {
       const AllIconDownload = screen.getAllByTestId("download-link-blue");
-      expect(AllIconDownload).toBeTruthy()
-     const iconDownload= AllIconDownload[0]
-      
-      if(iconDownload){
+      expect(AllIconDownload).toBeTruthy();
+      const iconDownload = AllIconDownload[0];
+
+      if (iconDownload) {
         const handleClickDownload = jest.fn(screen.handleClickDownload);
         iconDownload.addEventListener("click", handleClickDownload);
-        userEvent.click(iconDownload)
+        userEvent.click(iconDownload);
         expect(handleClickDownload).toHaveBeenCalled();
       }
-    })
-
-test("Then should be appler une function ", () => {
-  const AllIconDownload = screen.getAllByTestId("download-link-blue");
- 
- const iconDownload= AllIconDownload[0]
-  
-  
-    const handleClickDownload = jest.fn(screen.handleClickDownload);
-    iconDownload.addEventListener("click", handleClickDownload);
-    userEvent.click(iconDownload)
-    expect(handleClickDownload).toHaveBeenCalled();
- 
-
     });
-///test  ca ne marche pas il faut corriger////////////
-// test("Then should be appler une function ", () => {
-//   const onNavigate = jest.fn();
-//   const bills = new Bills({
-//     document: document,
-//     onNavigate: onNavigate,
-//     store: null,
-//     localStorage: null,
-//   });
-//   const AllIconDownload = screen.getAllByTestId("download-link-blue");
- 
-//  const iconDownload= AllIconDownload[0]
-  
-//  bills.handleClickDownload(iconDownload)
-//     iconDownload.addEventListener(handleClickDownload(iconDownload));
-//     userEvent.click(iconDownload)
-//     expect(handleClickDownload(iconDownload)).toHaveBeenCalled();
- 
 
- //    });
- 
+    test("Then handleClickDownload function should be called", async () => {
+      const onNavigate = jest.fn();
+      const bills = new Bills({
+        document: document,
+        onNavigate: onNavigate,
+        store: null,
+        localStorage: null,
+      });
+      window.jspdf = {
+        jsPDF: class jsPDF {
+          constructor() {}
+          addImage() {}
+          save() {}
+        },
+      };
 
-// Importez le module contenant handleClickDownload ici
+      const iconDownload = document.createElement("a");
+      iconDownload.setAttribute("data-bill-url", "http://localhost:5678/null");
+      const handleClickDownloadSpy = jest.spyOn(bills, "handleClickDownload");
 
-// test('When I click on the Download icon, handleClickDownload should be called', async () => {
-//   $.fn.jsPDF = jest.fn();
-//   jest.mock('jspdf', () => ({
-//     __esModule: true,
-//     default: jest.fn(),
-//   }));
-//   const onNavigate = jest.fn();
-//   const bills = new Bills({
-//     document: document,
-//     onNavigate: onNavigate,
-//     store: null,
-//     localStorage: null,
-//   });
-//   //window.jsPDF = window.jspdf.jsPDF;
+      iconDownload.addEventListener("click", () => {
+        bills.handleClickDownload(iconDownload);
+      });
 
-//   const handleClickDownload = jest.spyOn(bills, 'handleClickDownload');
-  
-//   const iconsDownload = screen.getAllByTestId("download-link-blue");
-//   const iconDownload = iconsDownload[0];
-//   await userEvent.click(iconDownload);
+      userEvent.click(iconDownload);
 
-//   expect(handleClickDownload).toHaveBeenCalled();
-// });
+      expect(handleClickDownloadSpy).toHaveBeenCalled();
+    });
 
-     describe("When I get Bills", () => {
+    describe("When I get Bills", () => {
       it("Then should handle errors with catch", async () => {
         const storeMock = {
           bills: () => ({
-            list: jest
-              .fn()
-              .mockRejectedValue(new Error("Some error message")),
+            list: jest.fn().mockRejectedValue(new Error("Some error message")),
           }),
         };
         const doc = {
-          date: "date invalide"
+          date: "date invalide",
         };
         const onNavigate = jest.fn();
         const bill = new Bills({
@@ -153,7 +119,7 @@ test("Then should be appler une function ", () => {
           store: storeMock,
           localStorage: null,
         });
-      
+
         try {
           await bill.getBills();
           const result = bill.getBills();
@@ -162,10 +128,9 @@ test("Then should be appler une function ", () => {
           expect(error.message).toBe("Some error message");
         }
       });
-      
-      })
-   });
+    });
   });
+});
 
 /**
  * @jest-environment code
@@ -176,13 +141,13 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
     it("Then A modal should open", () => {
       const handleClickIconEye = jest.fn(screen.handleClickIconEye);
       const eyes = screen.getAllByTestId("icon-eye");
-      expect( eyes).toBeTruthy()
+      expect(eyes).toBeTruthy();
       const eye = eyes[0];
       $.fn.modal = jest.fn();
       eye.addEventListener("click", handleClickIconEye);
       userEvent.click(eye);
       expect(handleClickIconEye).toHaveBeenCalled();
-    
+
       const modale = screen.getByTestId("modaleFileEmployee");
       expect(modale).toBeTruthy();
     });
@@ -263,33 +228,10 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
         document.body.appendChild(modalElement);
       }
       firstDownloadButton.addEventListener("click", handleClickDownload());
-      // Vérifiez que la modal est visible
+      // Vérifier que la modal est visible
       const modal = screen.getByTestId("Download");
       expect(modal).toBeVisible();
     });
-    //////////////////// a revoire ici////
-    // it("Then A handleClickDownload function should be called", async () => {
-    
-    //   // const onNavigate = jest.fn();
-    //   // const bills = new Bills({
-    //   //   document: document,
-    //   //   onNavigate: onNavigate,
-    //   //   store: null,
-    //   //   localStorage: null,
-    //   // });
-    //    const handleClickDownload = jest.fn(screen.handleClickDownload);
-    // ;
-    //   const iconsDownload = screen.getAllByTestId("download-link-blue");
-    //   const iconDownload = iconsDownload[0];
-    //   $.fn.jspdf = jest.fn();
-    //   // await bills.handleClickDownload()
-    //   iconDownload.addEventListener("click", handleClickDownload(iconDownload));
-    //   await    userEvent.click(iconDownload);
-     
-    //   expect(handleClickDownload).toHaveBeenCalled();
-    // });
-
-
 
     it("Then downloadLink should be have attribute (data-bill-url)", () => {
       const onNavigate = jest.fn();
@@ -335,9 +277,6 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
     });
   });
 });
-
-
-
 
 /**
  * test integration

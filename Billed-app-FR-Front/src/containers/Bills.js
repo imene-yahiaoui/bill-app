@@ -62,10 +62,10 @@ export default class Bills {
     const doc = new jsPDF();
     
     const image = new Image();
-    if (icon.getAttribute("data-bill-url") === "http://localhost:5678/null") {
+    if (icon?.getAttribute("data-bill-url") === "http://localhost:5678/null") {
       image.src = `${notFound}`;
     } else {
-      image.src = icon.getAttribute("data-bill-url");
+      image.src = icon?.getAttribute("data-bill-url");
     }
 
     doc.addImage(image, "png", 15, 40, 180, 160);
