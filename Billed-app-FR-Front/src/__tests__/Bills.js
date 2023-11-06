@@ -251,8 +251,37 @@ describe("Given I am connected as employee and I am on Dashboard page ", () => {
       });
     });
 
-    //ici ajouter downolad
+  it("Then should set the image source based on bill URL", () => {
+    const onNavigate = jest.fn();
+    const bills = new Bills({
+      document: document,
+      onNavigate: onNavigate,
+      store: null,
+      localStorage: null,
+    });
+    window.jspdf = {
+      jsPDF: class jsPDF {
+        constructor() {}
+        addImage() {}
+        save() {}
+      },
+    };
+    const icon = document.createElement("div");
+    icon.setAttribute("data-bill-url", "http://localhost:5678/public/6f7d29b2d76705b28fce20f897d08854");
+    const billUrl = icon.getAttribute("data-bill-url");
+   
+  
+    document.body.append(icon);
+  
+    bills.handleClickDownload(icon);
+  
+    const img = document.querySelector("img"); 
+  
+        expect(img.src).toBe(icon.getAttribute("data-bill-url"));
+   
+ 
   });
+})
 
   describe("When I click on buttonNewBill", () => {
     it("Then onNavigate should be called with ROUTES_PATH['NewBill']", () => {
