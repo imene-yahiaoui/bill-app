@@ -1,12 +1,12 @@
 /**
  * @jest-environment jsdom
  */
-
+import "@testing-library/jest-dom/extend-expect";
+import { screen, waitFor, fireEvent, render } from "@testing-library/dom";
 import LoginUI from "../views/LoginUI";
 import Login from "../containers/Login.js";
 import { ROUTES } from "../constants/routes";
-import { fireEvent, screen } from "@testing-library/dom";
-
+import userEvent from "@testing-library/user-event";
 /**
  * for employee
  */
@@ -28,31 +28,6 @@ describe("Given that I am a user on login page", () => {
       fireEvent.submit(form);
       expect(screen.getByTestId("form-employee")).toBeTruthy();
     });
-    /////Arevoir
-    // it("Then should handle errors with catch", async () => {
-    //   const storeMock = {
-    //     Login: () => ({
-    //       Login: jest.fn().mockRejectedValue(new Error("log is not defined")),
-    //     }),
-    //   };
-
-    //   const onNavigate = jest.fn();
-    //   let PREVIOUS_LOCATION = "";
-    //   const store = storeMock;
-    //   const login = new Login({
-    //     document,
-    //     localStorage: window.localStorage,
-    //     onNavigate,
-    //     PREVIOUS_LOCATION,
-    //     store,
-    //   });
-    //   try {
-    //     const e = { preventDefault: jest.fn() };
-    //     await login.handleSubmitEmployee(e);
-    //   } catch (err) {
-    //     expect(err.message).toBe("log is not defined");
-    //   }
-    // });
   });
 
   describe("When I do fill fields in incorrect format and I click on employee button Login In", () => {
@@ -74,6 +49,31 @@ describe("Given that I am a user on login page", () => {
       fireEvent.submit(form);
       expect(screen.getByTestId("form-employee")).toBeTruthy();
     });
+
+    it("Then should handle errors with catch", async () => {
+      document.body.innerHTML = LoginUI();
+
+      const inputEmailUser = screen.getByTestId("employee-email-input");
+      fireEvent.change(inputEmailUser, { target: { value: "test" } });
+      // expect(inputEmailUser.value).toBe("pasunemail");
+
+      const inputPasswordUser = screen.getByTestId("employee-password-input");
+      fireEvent.change(inputPasswordUser, { target: { value: "test" } });
+      // expect(inputPasswordUser.value).toBe("azerty");
+
+      try {
+        const form = screen.getByTestId("form-employee");
+        const handleSubmit = jest.fn((e) => e.preventDefault());
+        form.addEventListener("submit", handleSubmit);
+        fireEvent.submit(form);
+      } catch (err) {
+        expect(err.message).toBe("log is not defined");
+      }
+    });
+
+    ///////
+
+    /////////
   });
 
   describe("When I do fill fields in correct format and I click on employee button Login In", () => {
@@ -255,6 +255,82 @@ describe("Given that I am a user on login page", () => {
 
     test("It should renders HR dashboard page", () => {
       expect(screen.queryByText("Validations")).toBeTruthy();
+    });
+
+    //catch
+    test("Handle error in login", async () => {
+      document.body.innerHTML = LoginUI();
+      const inputData = {
+        type: "Admin",
+        email: "teste@email.com",
+        password: "azerty",
+        status: "connected",
+      };
+
+      const inputEmailUser = screen.getByTestId("admin-email-input");
+      fireEvent.change(inputEmailUser, { target: { value: inputData.email } });
+      expect(inputEmailUser.value).toBe(inputData.email);
+
+      const inputPasswordUser = screen.getByTestId("admin-password-input");
+      fireEvent.change(inputPasswordUser, {
+        target: { value: inputData.password },
+      });
+      expect(inputPasswordUser.value).toBe(inputData.password);
+
+      const form = screen.getByTestId("form-admin");
+
+      // Mock localStorage should be populated with form data
+      Object.defineProperty(window, "localStorage", {
+        value: {
+          getItem: jest.fn(() => null),
+          setItem: jest.fn(() => null),
+        },
+        writable: true,
+      });
+
+      // Mock navigation
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+
+      let PREVIOUS_LOCATION = "";
+
+      const createUser = jest.fn();
+      const login = new Login({
+        document,
+        localStorage: window.localStorage,
+        onNavigate,
+        PREVIOUS_LOCATION,
+        createUser,
+      });
+
+      // Mock login to throw an error
+      login.login = jest
+        .fn()
+        .mockRejectedValue(new Error("Some error message"));
+
+      const handleSubmit = jest.fn(login.handleSubmitAdmin);
+      form.addEventListener("submit", handleSubmit);
+
+      // Trigger form submission
+      form.dispatchEvent(new Event("submit"));
+
+      // Wait for the promise to resolve
+      await Promise.resolve();
+
+      // Assert that createUser was called
+      expect(window.localStorage.setItem).toHaveBeenCalledWith(
+        "user",
+        JSON.stringify({
+          type: "Admin",
+          email: inputData.email,
+          password: inputData.password,
+          status: "connected",
+        })
+      );
+
+      // Assert that the error message matches
+      expect(login.PREVIOUS_LOCATION).toBe("");
     });
   });
 });
