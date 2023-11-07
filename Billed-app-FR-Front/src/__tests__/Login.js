@@ -71,10 +71,6 @@ describe("Given that I am a user on login page", () => {
         expect(err.message).toBe("log is not defined");
       }
     });
-
-    ///////
-
-    /////////
   });
 
   describe("When I do fill fields in correct format and I click on employee button Login In", () => {
@@ -386,6 +382,76 @@ describe("Given that I am a user on login page", () => {
         })
       );
       expect(login.PREVIOUS_LOCATION).toBe("");
+    });
+  });
+});
+describe("Given a user wants to log in", () => {
+  describe("When the user logs in with a store", () => {
+    test("Then it should handle login with store", async () => {
+      const user = {
+        email: "johndoe@email.com",
+        password: "azerty",
+      };
+      const fakeStore = {
+        login: jest.fn().mockResolvedValue({ jwt: null }),
+      };
+
+      const login = new Login({
+        store: fakeStore,
+      });
+
+      await login.login(user);
+
+      expect(fakeStore.login).toHaveBeenCalledWith(JSON.stringify(user));
+      if (login.store) {
+        expect(localStorage.getItem("jwt")).toBeNull();
+      } else {
+        expect(localStorage.getItem("jwt")).toBeUndefined();
+      }
+    });
+  });
+  describe("When the user logs in without a store", () => {
+    test("Then it should handle login without a store", async () => {
+      const user = {
+        email: "johndoe@email.com",
+        password: "azerty",
+      };
+      const login = new Login({
+        store: null,
+      });
+
+      await login.login(user);
+
+      expect(login.store).toBeNull();
+      expect(localStorage.getItem("jwt")).toBeNull();
+    });
+  });
+});
+
+describe("Given that I am a user on the login page", () => {
+  describe("When I create a new user", () => {
+    test("Then the user should be created successfull", async () => {
+      const user = {
+        type: "Admin",
+        name: "test",
+        email: "test@gmail.com",
+        password: "test",
+      };
+      const fakeStore = {
+        login: jest.fn().mockResolvedValue({ jwt: null }),
+        users: () => ({
+          create: jest.fn().mockResolvedValue({}),
+        }),
+      };
+      const onNavigate = jest.fn();
+      const login = new Login({
+        onNavigate,
+        store: fakeStore,
+      });
+      await login.createUser(user);
+      expect(login.PREVIOUS_LOCATION).toBe();
+      expect(user.name).toBe("test");
+      expect(user.email).toBe("test@gmail.com");
     });
   });
 });

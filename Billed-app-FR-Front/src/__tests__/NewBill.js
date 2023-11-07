@@ -108,7 +108,6 @@ describe("Given I am connected as an employee", () => {
     });
 
     it("Then should create an instance of NewBill", () => {
-      // Mock des dépendances
       const mockDocument = document;
       const mockOnNavigate = jest.fn();
       const mockStore = {

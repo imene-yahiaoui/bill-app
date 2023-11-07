@@ -69,7 +69,7 @@ export default class Login {
       });
   };
 
-  // not need to cover this function by tests
+
   login = (user) => {
     if (this.store) {
       return this.store
@@ -79,7 +79,7 @@ export default class Login {
             password: user.password,
           })
         )
-        ?.then(({ jwt }) => {
+        .then(({ jwt }) => {
           localStorage.setItem("jwt", jwt);
         });
     } else {
@@ -87,21 +87,21 @@ export default class Login {
     }
   };
 
-  // not need to cover this function by tests
+
   createUser = (user) => {
     if (this.store) {
       return this.store
         .users()
         .create({
           data: JSON.stringify({
-            type: user.type,
-            name: user.email.split("@")[0],
-            email: user.email,
-            password: user.password,
+            type: user?.type,
+            name: user?.email?.split("@")[0],
+            email: user?.email,
+            password: user?.password,
           }),
         })
         .then(() => {
-          console.log(`User with ${user.email} is created`);
+          console.log(`User with ${user?.email} is created`);
           return this.login(user);
         });
     } else {
