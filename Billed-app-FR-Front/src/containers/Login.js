@@ -38,7 +38,7 @@ export default class Login {
     };
     this.localStorage?.setItem("user", JSON.stringify(user));
     this.login(user)
-      ?.catch((err) => this.createUser(user))
+      .catch((err) => this.createUser(user))
       .then(() => {
         this.onNavigate(ROUTES_PATH["Bills"]);
         this.PREVIOUS_LOCATION = ROUTES_PATH["Bills"];

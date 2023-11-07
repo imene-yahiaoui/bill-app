@@ -7,6 +7,7 @@ import LoginUI from "../views/LoginUI";
 import Login from "../containers/Login.js";
 import { ROUTES } from "../constants/routes";
 import userEvent from "@testing-library/user-event";
+import { ROUTES_PATH } from "../constants/routes.js";
 /**
  * for employee
  */
@@ -258,7 +259,7 @@ describe("Given that I am a user on login page", () => {
     });
 
     //catch
-    test("Handle error in login", async () => {
+    test("Handle error in login for Admin", async () => {
       document.body.innerHTML = LoginUI();
       const inputData = {
         type: "Admin",
@@ -279,7 +280,6 @@ describe("Given that I am a user on login page", () => {
 
       const form = screen.getByTestId("form-admin");
 
-      // Mock localStorage should be populated with form data
       Object.defineProperty(window, "localStorage", {
         value: {
           getItem: jest.fn(() => null),
@@ -288,7 +288,6 @@ describe("Given that I am a user on login page", () => {
         writable: true,
       });
 
-      // Mock navigation
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
       };
@@ -304,21 +303,21 @@ describe("Given that I am a user on login page", () => {
         createUser,
       });
 
-      // Mock login to throw an error
+    
       login.login = jest
         .fn()
-        .mockRejectedValue(new Error("Some error message"));
+        .mockRejectedValue(new Error(""));
 
       const handleSubmit = jest.fn(login.handleSubmitAdmin);
       form.addEventListener("submit", handleSubmit);
 
-      // Trigger form submission
+   
       form.dispatchEvent(new Event("submit"));
 
-      // Wait for the promise to resolve
+   
       await Promise.resolve();
 
-      // Assert that createUser was called
+  
       expect(window.localStorage.setItem).toHaveBeenCalledWith(
         "user",
         JSON.stringify({
@@ -329,8 +328,79 @@ describe("Given that I am a user on login page", () => {
         })
       );
 
-      // Assert that the error message matches
+   
       expect(login.PREVIOUS_LOCATION).toBe("");
     });
+
+ 
+    test("Handle error in login for Employee", async () => {
+      document.body.innerHTML = LoginUI();
+      const inputData = {
+        type: "Employee",
+        email: "johndoe@email.com",
+        password: "azerty",
+          status: "connected",
+      };
+
+      const inputEmailUser = screen.getByTestId("employee-email-input");
+      fireEvent.change(inputEmailUser, { target: { value: inputData.email } });
+      expect(inputEmailUser.value).toBe(inputData.email);
+
+      const inputPasswordUser = screen.getByTestId("employee-password-input");
+      fireEvent.change(inputPasswordUser, {
+        target: { value: inputData.password },
+      });
+      expect(inputPasswordUser.value).toBe(inputData.password);
+
+      const form = screen.getByTestId("form-employee");
+
+
+      Object.defineProperty(window, "localStorage", {
+        value: {
+          getItem: jest.fn(() => null),
+          setItem: jest.fn(() => null),
+        },
+        writable: true,
+      });
+
+
+      const onNavigate = jest.fn();
+      let PREVIOUS_LOCATION = "";
+
+      const createUser = jest.fn();
+      const login = new Login({
+        document,
+        localStorage: window.localStorage,
+        onNavigate,
+        PREVIOUS_LOCATION,
+        createUser,
+      });
+
+  
+      login.login = jest
+        .fn()
+        .mockRejectedValue(new Error(""));
+      const handleSubmit = jest.fn(login.handleSubmitEmployee);
+      form.addEventListener("submit", handleSubmit);
+   
+      form.dispatchEvent(new Event("submit"));
+          
+      await Promise.resolve();
+    
+      expect(window.localStorage.setItem).toHaveBeenCalledWith(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+          email: inputData.email,
+          password: inputData.password,
+          status: "connected",
+        })
+      );
+      expect(login.PREVIOUS_LOCATION).toBe("");
+    
+ 
+    });
+
+    ///
   });
 });
