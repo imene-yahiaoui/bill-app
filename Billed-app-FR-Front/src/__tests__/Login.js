@@ -257,9 +257,11 @@ describe("Given that I am a user on login page", () => {
     test("It should renders HR dashboard page", () => {
       expect(screen.queryByText("Validations")).toBeTruthy();
     });
+  });
 
-    //catch
-    test("Handle error in login for Admin", async () => {
+  //catch
+  describe("When Handling Errors in Login", () => {
+    test("Then Handle error in login for Admin", async () => {
       document.body.innerHTML = LoginUI();
       const inputData = {
         type: "Admin",
@@ -303,21 +305,15 @@ describe("Given that I am a user on login page", () => {
         createUser,
       });
 
-    
-      login.login = jest
-        .fn()
-        .mockRejectedValue(new Error(""));
+      login.login = jest.fn().mockRejectedValue(new Error(""));
 
       const handleSubmit = jest.fn(login.handleSubmitAdmin);
       form.addEventListener("submit", handleSubmit);
 
-   
       form.dispatchEvent(new Event("submit"));
 
-   
       await Promise.resolve();
 
-  
       expect(window.localStorage.setItem).toHaveBeenCalledWith(
         "user",
         JSON.stringify({
@@ -328,18 +324,16 @@ describe("Given that I am a user on login page", () => {
         })
       );
 
-   
       expect(login.PREVIOUS_LOCATION).toBe("");
     });
 
- 
-    test("Handle error in login for Employee", async () => {
+    test("Then Handle error in login for Employee", async () => {
       document.body.innerHTML = LoginUI();
       const inputData = {
         type: "Employee",
         email: "johndoe@email.com",
         password: "azerty",
-          status: "connected",
+        status: "connected",
       };
 
       const inputEmailUser = screen.getByTestId("employee-email-input");
@@ -354,7 +348,6 @@ describe("Given that I am a user on login page", () => {
 
       const form = screen.getByTestId("form-employee");
 
-
       Object.defineProperty(window, "localStorage", {
         value: {
           getItem: jest.fn(() => null),
@@ -362,7 +355,6 @@ describe("Given that I am a user on login page", () => {
         },
         writable: true,
       });
-
 
       const onNavigate = jest.fn();
       let PREVIOUS_LOCATION = "";
@@ -376,17 +368,14 @@ describe("Given that I am a user on login page", () => {
         createUser,
       });
 
-  
-      login.login = jest
-        .fn()
-        .mockRejectedValue(new Error(""));
+      login.login = jest.fn().mockRejectedValue(new Error(""));
       const handleSubmit = jest.fn(login.handleSubmitEmployee);
       form.addEventListener("submit", handleSubmit);
-   
+
       form.dispatchEvent(new Event("submit"));
-          
+
       await Promise.resolve();
-    
+
       expect(window.localStorage.setItem).toHaveBeenCalledWith(
         "user",
         JSON.stringify({
@@ -397,10 +386,6 @@ describe("Given that I am a user on login page", () => {
         })
       );
       expect(login.PREVIOUS_LOCATION).toBe("");
-    
- 
     });
-
-    ///
   });
 });
