@@ -1,5 +1,4 @@
 import { formatDate } from "../app/format.js";
-import { download } from "../app/download.js";
 import DashboardFormUI from "../views/DashboardFormUI.js";
 import BigBilledIcon from "../assets/svg/big_billed.js";
 import { ROUTES_PATH } from "../constants/routes.js";
@@ -91,17 +90,37 @@ export default class {
       $("#modaleFileAdmin1")
         .find(".modal-body")
         .html(
-          `<div style='text-align: center;'><img width="100%" src=${notFound} alt="Bill"/></div>`
+          `<div style='text-align: center;'><img   data-testid="image" width="100%" src=${notFound} alt="Bill"/></div>`
         );
     } else {
       $("#modaleFileAdmin1")
         .find(".modal-body")
         .html(
-          `<div style='text-align: center;'><img width="100%" src=${billUrl} alt="Bill"/></div>`
+          `<div style='text-align: center;'><img data-testid="image"  width="100%" src=${billUrl} alt="Bill"/></div>`
         );
     }
     if (typeof $("#modaleFileAdmin1").modal === "function")
       $("#modaleFileAdmin1").modal("show");
+  };
+
+  handleClickDownload = async () => {
+    window.jsPDF = window.jspdf?.jsPDF;
+    const doc = new jsPDF();
+
+    const image = new Image();
+    if (
+      $("#icon-download").attr("data-bill-url") === "http://localhost:5678/null"
+    ) {
+      image.src = `${notFound}`;
+    } else {
+      image.src = $("#icon-download").attr("data-bill-url");
+    }
+
+    doc.addImage(image, "png", 15, 40, 180, 160);
+    const pdfdow = await doc.save(
+      $("#download-link").attr("data-bill-name") + ".pdf"
+    );
+    const downloadLink = $("#download-link");
   };
 
   handleEditTicket(e, bill, bills) {
@@ -124,9 +143,8 @@ export default class {
       $(".vertical-navbar").css({ height: "120vh" });
       this.counter++;
     }
-    $("#icon-download").click(() => {
-      download();
-    });
+
+    $("#icon-download").click(this.handleClickDownload);
     $("#icon-eye-d").click(this.handleClickIconEye);
     $("#btn-accept-bill").click((e) => this.handleAcceptSubmit(e, bill));
     $("#btn-refuse-bill").click((e) => this.handleRefuseSubmit(e, bill));
@@ -168,7 +186,7 @@ export default class {
     }
 
     bills.forEach((bill) => {
-      $(`#open-bill${bill.id}`).click((e) =>
+      $(`#open-bill${bill.id}`).off().click((e) =>
         this.handleEditTicket(e, bill, bills)
       );
     });

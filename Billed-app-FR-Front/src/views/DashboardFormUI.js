@@ -76,10 +76,10 @@ export default (bill) => {
                 bill.fileUrl
               }"> ${eyeWhite} </span>
             
-              <a href'#' target="_blank" id="download-link" data-bill-name="${
+              <a href'#' target="_blank" data-testid="download-link"  id="download-link" data-bill-name="${
                 bill.fileName
               }">
-              <span id="icon-download"  data-bill-url="${
+              <span id="icon-download"  data-testid="downloadIcon" data-bill-url="${
                 bill.fileUrl
               }"> ${download} </span>
             </a>

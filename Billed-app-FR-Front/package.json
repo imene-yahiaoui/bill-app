@@ -15,6 +15,7 @@
       "!**/external/**",
       "!**/fixtures/**",
       "!**/lcov-report/**",
+      "!**/constants/**",
       "!*.js"
     ]
   },
