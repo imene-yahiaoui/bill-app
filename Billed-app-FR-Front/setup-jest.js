@@ -5,3 +5,8 @@ global.Image = class MockImage {
     this.src = "";
   }
 };
+global.Image = class MockImage {
+  constructor() {
+    this.src = "";
+  }
+};

@@ -60,7 +60,6 @@ export default class Bills {
   
     window.jsPDF = window.jspdf?.jsPDF;
     const doc = new jsPDF();
-    
     const image = new Image();
     if (icon?.getAttribute("data-bill-url") === "http://localhost:5678/null") {
       image.src = `${notFound}`;

@@ -106,16 +106,15 @@ export default class {
   handleClickDownload = async () => {
     window.jsPDF = window.jspdf?.jsPDF;
     const doc = new jsPDF();
-
     const image = new Image();
-    if (
-      $("#icon-download").attr("data-bill-url") === "http://localhost:5678/null"
-    ) {
-      image.src = `${notFound}`;
+    const icon = $("#icon-download");
+  
+    if (icon?.attr("data-bill-url") === "http://localhost:5678/null") {
+      image.src = notFound;
     } else {
-      image.src = $("#icon-download").attr("data-bill-url");
+      image.src = icon?.attr("data-bill-url");
     }
-
+  
     doc.addImage(image, "png", 15, 40, 180, 160);
     const pdfdow = await doc.save(
       $("#download-link").attr("data-bill-name") + ".pdf"
@@ -186,9 +185,9 @@ export default class {
     }
 
     bills.forEach((bill) => {
-      $(`#open-bill${bill.id}`).off().click((e) =>
-        this.handleEditTicket(e, bill, bills)
-      );
+      $(`#open-bill${bill.id}`)
+        .off()
+        .click((e) => this.handleEditTicket(e, bill, bills));
     });
 
     return bills;

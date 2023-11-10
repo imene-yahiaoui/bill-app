@@ -12,7 +12,6 @@ import { DashboardUI } from "../views/DashboardUI";
 import router from "../app/Router.js";
 import Bills from "../containers/Bills.js";
 import mockStore from "../__mocks__/store";
-// const jsPDF = require("jsPDF");
 import eyeBlueIcon from "../assets/svg/eye_blue.js";
 
 describe("Given I am connected as an employee", () => {

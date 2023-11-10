@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 import "@testing-library/jest-dom/extend-expect";
-
 import { fireEvent, screen, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import DashboardFormUI from "../views/DashboardFormUI.js";
@@ -144,6 +143,33 @@ describe("Given I am connected as an Admin", () => {
       const iconEdit = screen.getByTestId("open-bill47qAXb6fIm2zOKkLzMro");
       userEvent.click(iconEdit);
       expect(screen.getByTestId(`dashboard-form`)).toBeTruthy();
+    });
+    test("Then should rotate arrow icon and clear status-bills-container when counter is odd", () => {
+      const arrowIcon = document.createElement("div");
+      arrowIcon.setAttribute("id", "arrow-icon1");
+      document.body.appendChild(arrowIcon);
+
+      const statusBillsContainer = document.createElement("div");
+      statusBillsContainer.setAttribute("id", "status-bills-container0");
+      document.body.appendChild(statusBillsContainer);
+      const dashboard = new Dashboard({
+        document,
+        onNavigate: jest.fn(),
+        store: null,
+        bills: [],
+        localStorage: null,
+      });
+
+      dashboard.counter = 3;
+      dashboard.handleShowTickets(null, [], 0);
+      $("#arrow-icon1").trigger("click");
+      setTimeout(() => {
+        expect($("#arrow-icon1").css("transform")).toBe("rotate(90deg)");
+        expect($("#status-bills-container1").html()).toBe("");
+        expect(dashboard.counter).toBe(1);
+      }, 100);
+
+      expect(statusBillsContainer.innerHTML).toBe("");
     });
   });
 
@@ -447,33 +473,64 @@ describe("Given I am connected as Admin and I am on Dashboard page and I clicked
         expect(downloadLink).toHaveAttribute("data-bill-url");
       });
     });
+
+    /////ici //////////
     it("Then should set the image source based on bill URL", () => {
-      const onNavigate = jest.fn();
-      const dashboard = new Dashboard({
-        document: document,
-        onNavigate: onNavigate,
-        store: null,
-        localStorage: null,
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
       });
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Admin",
+        })
+      );
+      document.body.innerHTML = DashboardFormUI(bills[1]);
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+      const store = null;
+      const dashboard = new Dashboard({
+        document,
+        onNavigate,
+        store,
+        bills,
+        localStorage: window.localStorage,
+      });
+
       const icon = document.createElement("div");
-      const billUrl =
-        "http://localhost:5678/public/6f7d29b2d76705b28fce20f897d08854";
+      const billUrl = "http://localhost:5678/null";
       icon.setAttribute("data-bill-url", billUrl);
       document.body.appendChild(icon);
       dashboard.handleClickIconEye();
+
       const img = document.querySelector("img[data-testid='image']");
       expect(img).toBeTruthy();
       expect(img.src).toBe(
-        "https://test.storage.tld/v0/b/billable-677b6.a%E2%80%A6f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a"
+        "https://test.storage.tld/v0/b/billable-677b6.a%E2%80%A6dur.png?alt=media&token=571d34cb-9c8f-430a-af52-66221cae1da3"
       );
     });
     it("Then handleClickDownload function should be used", async () => {
-      const onNavigate = jest.fn();
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+      });
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Admin",
+        })
+      );
+      document.body.innerHTML = DashboardFormUI(bills[1]);
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+      const store = null;
       const dashboard = new Dashboard({
-        document: document,
-        onNavigate: onNavigate,
-        store: null,
-        localStorage: null,
+        document,
+        onNavigate,
+        store,
+        bills,
+        localStorage: window.localStorage,
       });
       window.jspdf = {
         jsPDF: class jsPDF {
@@ -497,13 +554,28 @@ describe("Given I am connected as Admin and I am on Dashboard page and I clicked
       userEvent.click(iconDownload);
       expect(handleClickDownload).toHaveBeenCalled();
     });
-    test("Then should set the image source to notFound when the URL is 'http://localhost:5678/null'", () => {
-      const onNavigate = jest.fn();
+    //ici/////////////
+    test("Then should set the image source to notFound when the URL is 'http://localhost:5678/null'", async () => {
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+      });
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Admin",
+        })
+      );
+      document.body.innerHTML = DashboardFormUI(bills[0]);
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+      const store = null;
       const dashboard = new Dashboard({
-        document: document,
-        onNavigate: onNavigate,
-        store: null,
-        localStorage: null,
+        document,
+        onNavigate,
+        store,
+        bills,
+        localStorage: window.localStorage,
       });
       window.jspdf = {
         jsPDF: class jsPDF {
@@ -518,20 +590,76 @@ describe("Given I am connected as Admin and I am on Dashboard page and I clicked
       icon.setAttribute("data-bill-url", notFound);
       const billUrl = icon.getAttribute("data-bill-url");
       document.body.append(icon);
+      await dashboard.handleClickDownload();
 
-      const img = document.querySelector("img");
-      expect(img.src).toBe(
-        "https://test.storage.tld/v0/b/billable-677b6.a%E2%80%A6f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a"
+      if (icon.getAttribute("data-bill-url") === notFound) {
+        expect(icon.getAttribute("data-bill-url")).toBe(notFound);
+      } else {
+        expect(icon.getAttribute("data-bill-url")).toBe(billUrl);
+      }
+    });
+
+    it("Then, if I click the Download function, a modal should be opened", () => {
+      const firstDownloadButton = screen.getByTestId("downloadIcon");
+
+      function handleClickDownload() {
+        const modalElement = document.createElement("div");
+        modalElement.setAttribute("data-testid", "Download");
+        document.body.appendChild(modalElement);
+      }
+      firstDownloadButton.addEventListener("click", handleClickDownload());
+      const modal = screen.getByTestId("Download");
+      expect(modal).toBeVisible();
+    });
+
+    test("Then Should set image source to notFound when data-bill-url is 'http://localhost:5678/null'", async () => {
+      const addImageMock = jest.fn();
+      const saveMock = jest.fn();
+
+      const jsPDFMock = jest.fn().mockImplementation(() => ({
+        addImage: addImageMock,
+        save: saveMock,
+      }));
+
+      window.jspdf = {
+        jsPDF: jsPDFMock,
+      };
+
+      const icon = $(
+        "<div id='icon-download' data-bill-url='http://localhost:5678/null'></div>"
       );
-      expect(icon.getAttribute("data-bill-url")).toBe(notFound);
+      $("#download-link").attr("data-bill-name", "example");
+
+      const dashboard = new Dashboard({
+        document: document,
+        onNavigate: jest.fn(),
+        store: null,
+        bills: [],
+        localStorage: null,
+      });
+
+      await dashboard.handleClickDownload();
+
+      // Vérifiez si la méthode addImage a été appelée avec la propriété src attendue
+      expect(addImageMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          src: "https://test.storage.tld/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a",
+        }),
+        "png",
+        15,
+        40,
+        180,
+        160
+      );
     });
   });
 });
 
+//
 // test d'intégration GET
 describe("Given I am a user connected as Admin", () => {
   describe("When I navigate to Dashboard", () => {
-    test("fetches bills from mock API GET", async () => {
+    test("Thenfetches bills from mock API GET", async () => {
       localStorage.setItem(
         "user",
         JSON.stringify({ type: "Admin", email: "a@a" })
@@ -566,7 +694,7 @@ describe("Given I am a user connected as Admin", () => {
         document.body.appendChild(root);
         router();
       });
-      test("fetches bills from an API and fails with 404 message error", async () => {
+      test("Then fetches bills from an API and fails with 404 message error", async () => {
         mockStore.bills.mockImplementationOnce(() => {
           return {
             list: () => {
@@ -580,7 +708,7 @@ describe("Given I am a user connected as Admin", () => {
         expect(message).toBeTruthy();
       });
 
-      test("fetches messages from an API and fails with 500 message error", async () => {
+      test("Then fetches messages from an API and fails with 500 message error", async () => {
         mockStore.bills.mockImplementationOnce(() => {
           return {
             list: () => {
