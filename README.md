@@ -1,4 +1,5 @@
-# bill-app
+<img width="213" alt="1597396368627_image2" src="https://github.com/imene-yahiaoui/bill-app/assets/76797190/f67aaf29-3fc8-4167-b7fb-f486e6093b7a">
+
 
 Acceder au repertoire du projet :
 étape 1 -Lancer le backend :
