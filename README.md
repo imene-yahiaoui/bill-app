@@ -1,46 +1,42 @@
 <img width="213" alt="1597396368627_image2" src="https://github.com/imene-yahiaoui/bill-app/assets/76797190/f67aaf29-3fc8-4167-b7fb-f486e6093b7a">
 
 
+## Getting Started 🚀
 
+### Step 1 - Launch the Backend
 
-Acceder au repertoire du projet :
-étape 1 -Lancer le backend :
+Navigate to the project directory:
 
 cd Billed-app-FR-Back
 
-
-Lancer l'API :
-
+Launch the API:
 
 npm run run:dev
 
-étape 2 - Lancer le frontend :=> =>
+### Step 2 - Launch the Frontend
 
+Navigate to the frontend directory:
 
-$ cd Billed-app-FR-Front
+cd Billed-app-FR-Front
 
-
-Lancez l'application :
-
+Start the application:
 
 live-server
 
+### Accessing the API
 
-Access to the PAI :
+The API is locally available on port 5678. Visit http://localhost:5678 to access it.
 
-The API is locally available on port 5678, go to http://localhost:5678
+### Credentials
 
-administrateur :
+#### Administrator 👩‍💼:
 
-utilisateur : admin@company.tld 
+- Username: admin@company.tld
+- Password: admin
 
-mot de passe : admin
+#### Employee 👨‍💼:
 
+- Username: employee@company.tld
+- Password: employee
 
-employé :
-
-
-utilisateur : employee@company.tld
-
-
-mot de passe : employee
+ 
