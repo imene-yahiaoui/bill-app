@@ -429,7 +429,7 @@ describe("Given I am connected as Admin and I am on Dashboard page and I clicked
       }, 0);
     });
   });
-  /////////////////////////test
+
 
   describe("When I click on the Download icon", () => {
     test("Then should trigger the download function when the icon is clicked", () => {
@@ -655,7 +655,7 @@ describe("Given I am connected as Admin and I am on Dashboard page and I clicked
   });
 });
 
-//
+
 // test d'intégration GET
 describe("Given I am a user connected as Admin", () => {
   describe("When I navigate to Dashboard", () => {

@@ -3,9 +3,15 @@ import NewBill from "../containers/NewBill.js";
 import { render, screen, fireEvent, waitFor } from "@testing-library/dom";
 import "@testing-library/jest-dom/extend-expect";
 import userEvent from "@testing-library/user-event";
-import { ROUTES_PATH } from "../constants/routes.js";
+import { ROUTES_PATH, ROUTES } from "../constants/routes.js";
+import store from "../__mocks__/store.js";
+import { localStorageMock } from "../__mocks__/localStorage.js";
 import { bills } from "../fixtures/bills.js";
 import router from "../app/Router.js";
+import BillsUI from "../views/BillsUI.js";
+
+import mockStore from "../__mocks__/store";
+jest?.mock("../app/store", () => mockStore);
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
@@ -54,7 +60,6 @@ describe("Given I am connected as an employee", () => {
 
 /**NewBill constainer */
 
-/**Test de la création d'une instance */
 describe("Given I am connected as an employee", () => {
   describe("When I am submite a NewBill Page,i should  creat NewBill", () => {
     it("Then handleChangeFile function should be called", () => {
@@ -249,36 +254,162 @@ describe("Given I am connected as an employee", () => {
 });
 
 /**
- * test integration
+ * test integration POST
  */
 
-// test d'intégration POST a faire
-
 describe("Given I am a user connected as Employee", () => {
-  describe("When I submit a new bill", () => {
-    test("Then fetches bills from mock API POST", async () => {
-      localStorage.setItem(
+  describe("When I click on the 'new bill' button", () => {
+    beforeEach(() => {
+      jest.spyOn(store, "bills");
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+      });
+      window.localStorage.setItem(
         "user",
-        JSON.stringify({ type: "Employee", email: "employee@test.tld" })
+        JSON.stringify({
+          type: "Employee",
+          email: "employee@test.tld",
+        })
       );
       const root = document.createElement("div");
       root.setAttribute("id", "root");
-      document.body.append(root);
+      document.body.appendChild(root);
       router();
-      window.onNavigate(ROUTES_PATH.Bills);
-      await waitFor(() => screen.getByTestId("title"));
-      const title = screen.getByTestId("title");
-      expect(title.textContent.trim()).toBe("Envoyer une note de frais");
-      const inputName = screen.getByTestId("expense-name");
-      expect(inputName).toBeTruthy();
-      const datepicker = screen.getByTestId("datepicker");
-      expect(datepicker).toBeTruthy();
-      const vat = screen.getByTestId("vat");
-      const pct = screen.getByTestId("pct");
-      expect(vat).toBeTruthy();
-      expect(pct).toBeTruthy();
     });
 
- 
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it("create a new bills from mock API POST", async () => {
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({
+          pathname,
+        });
+      };
+      window.onNavigate(ROUTES_PATH.NewBill);
+
+      const newBill = new NewBill({
+        document,
+        onNavigate,
+        store: mockStore,
+        localStorage: window.localStorage,
+      });
+
+      document.body.innerHTML = NewBillUI();
+      const inputType = screen.getByTestId("expense-type");
+      const inputName = screen.getByTestId("expense-name");
+      const inputDate = screen.getByTestId("datepicker");
+      const inputAmount = screen.getByTestId("amount");
+      const inputVAT = screen.getByTestId("vat");
+      const inputPCT = screen.getByTestId("pct");
+      const inputCommentary = screen.getByTestId("commentary");
+      const inputFile = screen.getByTestId("file");
+      expect(inputType).toBeTruthy();
+      expect(inputName).toBeTruthy();
+      expect(inputDate).toBeTruthy();
+      expect(inputAmount).toBeTruthy();
+      expect(inputVAT).toBeTruthy();
+      expect(inputPCT).toBeTruthy();
+      expect(inputCommentary).toBeTruthy();
+      expect(inputFile).toBeTruthy();
+      userEvent.type(inputType, "Services en ligne");
+      userEvent.type(inputName, "test3");
+      userEvent.type(inputDate, "2003-03-03");
+      userEvent.type(inputAmount, "300");
+      userEvent.type(inputVAT, "60");
+      userEvent.type(inputPCT, "20");
+      userEvent.type(inputCommentary, "facteure");
+      newBill.fileName = "facture-clien";
+      newBill.fileUrl =
+        "https://test.storage.tld/v0/b/billable-677b6.a…dur.png?alt=media&token=571d34cb-9c8f-430a-af52-66221cae1da3";
+      const email = "e@e";
+
+      const bill = [
+        {
+          id: "UIUZtnPQvnbFnB0ozvJh",
+          vat: "60",
+          fileUrl:
+            "https://test.storage.tld/v0/b/billable-677b6.a…dur.png?alt=media&token=571d34cb-9c8f-430a-af52-66221cae1da3",
+          status: "pending",
+          type: "Services en ligne",
+          commentary: "facteure",
+          name: "encore",
+          fileName:
+            "facture-client-php-exportee-dans-document-pdf-enregistre-sur-disque-dur.png",
+          date: "2004-04-04",
+          amount: 400,
+          commentAdmin: "ok",
+          email: "a@a",
+          pct: 20,
+        },
+      ];
+
+      const handleChangeFile = jest.fn(newBill.handleChangeFile);
+      const handleSubmit = jest.spyOn(newBill, "handleSubmit");
+      const NewBillForm = screen.getByTestId("form-new-bill");
+      mockStore.bills.mockImplementation(() => {
+        return {
+          create: () => {
+            return Promise.resolve({
+              fileUrl: `${newBill.fileUrl}`,
+              key: "1234",
+            });
+          },
+          update: () => {
+            return Promise.resolve({
+              id: "UIUZtnPQvnbFnB0ozvJh",
+              vat: "60",
+              fileUrl:
+                "https://test.storage.tld/v0/b/billable-677b6.a…dur.png?alt=media&token=571d34cb-9c8f-430a-af52-66221cae1da3",
+              status: "pending",
+              type: "Services en ligne",
+              commentary: "facteure",
+              name: "encore",
+              fileName:
+                "facture-client-php-exportee-dans-document-pdf-enregistre-sur-disque-dur.png",
+              date: "2003-03-03",
+              amount: 300,
+              commentAdmin: "ok",
+              email: "a@a",
+              pct: 20,
+            });
+          },
+        };
+      });
+
+      inputFile.addEventListener("change", handleChangeFile);
+      NewBillForm.addEventListener("submit", handleSubmit);
+      userEvent.upload(
+        inputFile,
+        new File(["(--[IMG]--)"], "factureClient.jpg", {
+          type: "image/jpg",
+        })
+      );
+      //click sur envoyer
+      fireEvent.submit(NewBillForm);
+
+      expect(handleChangeFile).toHaveBeenCalled();
+      expect(handleChangeFile).toBeCalled();
+      expect(handleSubmit).toHaveBeenCalled();
+      expect(mockStore.bills).toHaveBeenCalled();
+      expect(screen.getAllByText("Mes notes de frais")).toBeTruthy();
+    });
+
+    describe("When an error occurs on API", () => {
+      it("Then fetches messages from an API and fails with 500 message error", async () => {
+        const html = BillsUI({ error: "Erreur 404" });
+        document.body.innerHTML = html;
+        const message = await screen.getByText("Erreur 404");
+        expect(message).toBeTruthy();
+      });
+
+      it("Then fetches messages from an API and fails with 500 message error", async () => {
+        const html = BillsUI({ error: "Erreur 500" });
+        document.body.innerHTML = html;
+        const message = await screen.getByText("Erreur 500");
+        expect(message).toBeTruthy();
+      });
+    });
   });
 });
