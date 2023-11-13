@@ -31,13 +31,13 @@ Le plan de test end-to-end évalue le système dans son ensemble, couvrant la na
  
 
 ## Comparaison des Rapports Jest - Avant et Après le Travail sur le Projet 📊
-# Avant le Travail sur le Projet
+# Avant le Travail sur le Projet ✖️
 
 ![jestAvant](https://github.com/imene-yahiaoui/jest/assets/76797190/ed959551-fa6a-4134-bfaf-faa14dc258b4)
 
 Dans la capture d'écran ci-dessus, vous pouvez voir le rapport Jest avant que des travaux ne soient effectués sur le projet. Des tests unitaires ont été exécutés, mais certains problèmes ont été identifiés, tels que des échecs de tests et des erreurs non résolues.
 
-# Après le Travail sur le Projet
+# Après le Travail sur le Projet 📈
 
 ![jest apres](https://github.com/imene-yahiaoui/jest/assets/76797190/429e556b-bc53-4b77-8a99-4e8544fe6756)
 
@@ -45,7 +45,57 @@ Après les travaux sur le projet, le rapport Jest a été amélioré. Les tests 
 
 
 ## Getting Started 🚀
+ # 🇫🇷 🌍
 
+# Démarrage 🚀
+
+## Étape 1 - Lancer le Backend
+
+Accédez au répertoire du projet :
+
+cd Billed-app-FR-Back
+
+Lancez l'API :
+
+npm run run:dev
+
+
+### Étape 2 - Lancer le Frontend
+
+Accédez au répertoire frontend :
+
+cd Billed-app-FR-Front
+
+Démarrez l'application :
+
+live-server
+
+Accès à l'API:
+
+L'API est disponible localement sur le port 5678. Visitez http://localhost:5678 pour y accéder.
+
+### Informations d'Identification
+
+
+#### Administrateur 👩‍💼:
+
+
+Nom d'utilisateur : admin@company.tld
+
+
+Mot de passe : admin
+
+
+#### Employé 👨‍💼:
+
+
+Nom d'utilisateur : employee@company.tld
+
+
+Mot de passe : employee
+
+ # EN🌍
+ 
 ### Step 1 - Launch the Backend
 
 Navigate to the project directory:
