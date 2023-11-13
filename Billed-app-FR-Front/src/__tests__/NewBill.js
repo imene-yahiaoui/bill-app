@@ -9,7 +9,6 @@ import { localStorageMock } from "../__mocks__/localStorage.js";
 import { bills } from "../fixtures/bills.js";
 import router from "../app/Router.js";
 import BillsUI from "../views/BillsUI.js";
-
 import mockStore from "../__mocks__/store";
 jest?.mock("../app/store", () => mockStore);
 
@@ -33,7 +32,7 @@ describe("Given I am connected as an employee", () => {
       const datepicker = screen.getByTestId("datepicker");
       expect(datepicker).toBeTruthy();
     });
-    //vat
+   
     test("Then it should see input vat and pct of expense", () => {
       const html = NewBillUI();
       document.body.innerHTML = html;
@@ -275,10 +274,6 @@ describe("Given I am a user connected as Employee", () => {
       root.setAttribute("id", "root");
       document.body.appendChild(root);
       router();
-    });
-
-    afterEach(() => {
-      jest.restoreAllMocks();
     });
 
     it("create a new bills from mock API POST", async () => {
