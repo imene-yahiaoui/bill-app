@@ -430,7 +430,6 @@ describe("Given I am connected as Admin and I am on Dashboard page and I clicked
     });
   });
 
-
   describe("When I click on the Download icon", () => {
     test("Then should trigger the download function when the icon is clicked", () => {
       const download = jest.fn();
@@ -474,7 +473,6 @@ describe("Given I am connected as Admin and I am on Dashboard page and I clicked
       });
     });
 
-    /////ici //////////
     it("Then should set the image source based on bill URL", () => {
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
@@ -554,7 +552,7 @@ describe("Given I am connected as Admin and I am on Dashboard page and I clicked
       userEvent.click(iconDownload);
       expect(handleClickDownload).toHaveBeenCalled();
     });
-    //ici/////////////
+
     test("Then should set the image source to notFound when the URL is 'http://localhost:5678/null'", async () => {
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
@@ -640,7 +638,6 @@ describe("Given I am connected as Admin and I am on Dashboard page and I clicked
 
       await dashboard.handleClickDownload();
 
-      // Vérifiez si la méthode addImage a été appelée avec la propriété src attendue
       expect(addImageMock).toHaveBeenCalledWith(
         expect.objectContaining({
           src: "https://test.storage.tld/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a",
@@ -654,7 +651,6 @@ describe("Given I am connected as Admin and I am on Dashboard page and I clicked
     });
   });
 });
-
 
 // test d'intégration GET
 describe("Given I am a user connected as Admin", () => {

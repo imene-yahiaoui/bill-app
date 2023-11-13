@@ -60,13 +60,22 @@ describe("Given I am connected as an employee", () => {
       }
     });
 
-    test("Then should be existe buttons iconEye", () => {
-      const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`);
-      expect(iconEye).toBeTruthy();
-      expect(iconEye).toBeDefined();
-      iconEye.forEach((icon) => {
-        expect(icon).toHaveAttribute("id", "eye");
-        expect(icon.getAttribute("id")).toBe("eye");
+    test("Then should be exist buttons iconEye", async () => {
+      await waitFor(() => {
+        const iconEye = screen.getAllByTestId("icon-eye");
+
+        const handleClickIconEye = jest.fn();
+
+        if (iconEye.length > 0) {
+          iconEye.forEach((icon) => {
+            expect(icon).toHaveAttribute("id", "eye");
+            icon.addEventListener("click", () => handleClickIconEye(icon));
+            userEvent.click(icon);
+            expect(handleClickIconEye).toHaveBeenCalled();
+          });
+        } else {
+          expect(handleClickIconEye).not.toHaveBeenCalled();
+        }
       });
     });
 
@@ -86,10 +95,13 @@ describe("Given I am connected as an employee", () => {
         },
       };
       const AllIconDownload = screen.getAllByTestId("download-link-blue");
-      expect(AllIconDownload).toBeTruthy();
-      AllIconDownload.forEach((iconDownload) => {
-        expect(iconDownload).toHaveAttribute("id", "download-link-blue");
-      });
+      if (AllIconDownload) {
+        expect(AllIconDownload).toBeTruthy();
+
+        AllIconDownload.forEach((iconDownload) => {
+          expect(iconDownload).toHaveAttribute("id", "download-link-blue");
+        });
+      }
       const iconDownload = AllIconDownload[0];
 
       if (iconDownload) {
@@ -123,7 +135,7 @@ describe("Given I am connected as an employee", () => {
       const iconDownload = document.createElement("a");
       iconDownload.setAttribute("data-bill-url", "http://localhost:5678/null");
       document.body.append(iconDownload);
-      ///ici ajoute
+
       const handleClickDownloadSpy = jest.spyOn(bills, "handleClickDownload");
 
       iconDownload.addEventListener("click", () => {
