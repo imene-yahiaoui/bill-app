@@ -44,10 +44,10 @@ Dans la capture d'écran ci-dessus, vous pouvez voir le rapport Jest avant que d
 Après les travaux sur le projet, le rapport Jest a été amélioré. Les tests unitaires ont été ajustés, les problèmes ont été résolus, et la couverture des tests a été augmentée. Les résultats sont plus positifs, montrant une meilleure stabilité du code et une réduction des erreurs.
 
 
-## Getting Started 🚀
+
  # 🇫🇷 🌍
 
-# Démarrage 🚀
+   # Démarrage 🚀
 
 ## Étape 1 - Lancer le Backend
 
@@ -95,6 +95,7 @@ Nom d'utilisateur : employee@company.tld
 Mot de passe : employee
 
  # EN🌍
+ ## Getting Started 🚀
  
 ### Step 1 - Launch the Backend
 
