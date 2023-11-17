@@ -108,13 +108,13 @@ export default class {
     const doc = new jsPDF();
     const image = new Image();
     const icon = $("#icon-download");
-  
+
     if (icon?.attr("data-bill-url") === "http://localhost:5678/null") {
       image.src = notFound;
     } else {
       image.src = icon?.attr("data-bill-url");
     }
-  
+
     doc.addImage(image, "png", 15, 40, 180, 160);
     const pdfdow = await doc.save(
       $("#download-link").attr("data-bill-name") + ".pdf"

@@ -32,7 +32,7 @@ describe("Given I am connected as an employee", () => {
       const datepicker = screen.getByTestId("datepicker");
       expect(datepicker).toBeTruthy();
     });
-   
+
     test("Then it should see input vat and pct of expense", () => {
       const html = NewBillUI();
       document.body.innerHTML = html;
@@ -84,7 +84,7 @@ describe("Given I am connected as an employee", () => {
       newBill.handleChangeFile(event);
       expect(event.preventDefault).toHaveBeenCalled();
     });
-    /////////////ici////////
+
     it("Then handleChangeFile function should be update properties", async () => {
       const storeMock = {
         bills: () => {
@@ -276,7 +276,7 @@ describe("Given I am a user connected as Employee", () => {
       router();
     });
 
-    it("create a new bills from mock API POST", async () => {
+    it("Then create a new bills from mock API POST", async () => {
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({
           pathname,
